@@ -12,6 +12,10 @@
     "tsconfig": "workspace:*",
     "turbo": "latest"
   },
+  "engines": {
+    "node": "18",
+    "pnpm": "8"
+  },
   "name": "elba-security",
   "packageManager": "pnpm@8.10.2"
 }
