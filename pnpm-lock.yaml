@@ -60,7 +60,7 @@ importers:
         specifier: ^8
         version: 8.53.0
       eslint-config-custom:
-        specifier: '*'
+        specifier: workspace:*
         version: link:../packages/eslint-config-custom
       tsconfig:
         specifier: workspace:*
