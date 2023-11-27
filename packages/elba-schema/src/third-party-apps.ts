@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { infer as zInfer } from 'zod';
-import { baseDeleteRequestSchema, jsonSchema } from './common';
+import { jsonSchema } from './common';
 
 export const updateThirdPartyAppsSchema = z.object({
   apps: z.array(
@@ -27,6 +27,13 @@ export const updateThirdPartyAppsSchema = z.object({
 
 export type UpdateThirdPartyApps = zInfer<typeof updateThirdPartyAppsSchema>;
 
-export const deleteThirdPartyAppsSchema = baseDeleteRequestSchema;
+export const deleteThirdPartyAppsSchema = z.union([
+  z.object({
+    ids: z.array(z.object({ userId: z.string().min(1), appId: z.string().min(1) })),
+  }),
+  z.object({
+    syncedBefore: z.string().datetime(),
+  }),
+]);;
 
 export type DeleteThirdPartyApps = zInfer<typeof deleteThirdPartyAppsSchema>;
