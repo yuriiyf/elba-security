@@ -86,6 +86,9 @@ importers:
         specifier: workspace:*
         version: link:../schemas
     devDependencies:
+      '@edge-runtime/vm':
+        specifier: ^3.1.7
+        version: 3.1.7
       '@elba-security/eslint-config-custom':
         specifier: workspace:*
         version: link:../eslint-config-custom
@@ -109,7 +112,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: ^1.0.0
-        version: 1.0.0(@types/node@20.10.3)
+        version: 1.0.0(@edge-runtime/vm@3.1.7)(@types/node@20.10.3)
 
   packages/test-utils:
     dependencies:
@@ -127,7 +130,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: '>=1.0.0'
-        version: 1.0.0(@types/node@20.10.3)
+        version: 1.0.0(@edge-runtime/vm@3.1.7)(@types/node@20.10.3)
       zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -385,6 +388,16 @@ packages:
     resolution: {integrity: sha512-yn7BklA5acgcBr+7w064fGV+SGIFySjCKpqjcWgBAIfrAkY+4GQTJJHQMeT3V/sgz23VTEVV8TtOmkvJAhFVfg==}
     dependencies:
       statuses: 2.0.1
+
+  /@edge-runtime/primitives@4.0.5:
+    resolution: {integrity: sha512-t7QiN5d/KpXgCvIfSt6Nm9Hj3WVdNgc5CpOD73jasY+9EvTI7Ngdj5cXvjcHrPcmYWJZMySPgeEeoL/1N/Llag==}
+    engines: {node: '>=16'}
+
+  /@edge-runtime/vm@3.1.7:
+    resolution: {integrity: sha512-hUMFbDQ/nZN+1TLMi6iMO1QFz9RSV8yGG8S42WFPFma1d7VSNE0eMdJUmwjmtav22/iQkzHMmu6oTSfAvRGS8g==}
+    engines: {node: '>=16'}
+    dependencies:
+      '@edge-runtime/primitives': 4.0.5
 
   /@esbuild/android-arm64@0.18.20:
     resolution: {integrity: sha512-Nz4rJcchGDtENV0eMKUNa6L12zz2zBDXuhj/Vjh18zGqB44Bi7MBMSXjgunJgjRhCmKOjnPuZp4Mb6OKqtMHLQ==}
@@ -4705,7 +4718,7 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
 
-  /vitest@1.0.0(@types/node@20.10.3):
+  /vitest@1.0.0(@edge-runtime/vm@3.1.7)(@types/node@20.10.3):
     resolution: {integrity: sha512-jpablj5+ifiFHV3QGOxPews3uxBuu6rQUzTaQYtEd6ocBpdQBil6AvmmGRQ3Rn0WPgyzb+Ni+JekfMyng+qYng==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -4730,6 +4743,7 @@ packages:
       jsdom:
         optional: true
     dependencies:
+      '@edge-runtime/vm': 3.1.7
       '@types/node': 20.10.3
       '@vitest/expect': 1.0.0
       '@vitest/runner': 1.0.0
