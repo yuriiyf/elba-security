@@ -153,6 +153,25 @@ importers:
 
   packages/tsconfig: {}
 
+  packages/utils:
+    dependencies:
+      typescript:
+        specifier: ^5
+        version: 5.2.2
+    devDependencies:
+      '@elba-security/eslint-config-custom':
+        specifier: workspace:*
+        version: link:../eslint-config-custom
+      '@elba-security/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      eslint:
+        specifier: ^8
+        version: 8.53.0
+      vitest:
+        specifier: ^1.0.0
+        version: 1.0.0(@edge-runtime/vm@3.1.7)(@types/node@20.10.3)
+
 packages:
 
   /@aashutoshrathi/word-wrap@1.2.6:
