@@ -3,11 +3,17 @@ import { inngest } from '@/inngest/client';
 import { db } from '@/database/client';
 import { Organisation } from '@/database/schema';
 
-export const setupOrganisation = async (
-  installationId: number,
-  organisationId: string,
-  region: string
-) => {
+type SetupOrganisationParams = {
+  installationId: number;
+  organisationId: string;
+  region: string;
+};
+
+export const setupOrganisation = async ({
+  installationId,
+  organisationId,
+  region,
+}: SetupOrganisationParams) => {
   const installation = await getInstallation(installationId);
 
   if (installation.account.type !== 'Organization') {
@@ -25,6 +31,14 @@ export const setupOrganisation = async (
       installationId: installation.id,
       accountLogin: installation.account.login,
       region,
+    })
+    .onConflictDoUpdate({
+      target: Organisation.id,
+      set: {
+        installationId: installation.id,
+        accountLogin: installation.account.login,
+        region,
+      },
     })
     .returning();
 
