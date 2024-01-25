@@ -1,11 +1,11 @@
 import { env } from '@/env';
-import { db } from '@/database/client';
 import { organisationsTable } from '@/database/schema';
+import { db } from '@/database/client';
 import { inngest } from '../../client';
 
-export const scheduleUsersSyncs = inngest.createFunction(
-  { id: 'github-schedule-users-syncs' },
-  { cron: env.USERS_SYNC_CRON },
+export const scheduleAppsSyncs = inngest.createFunction(
+  { id: 'github-schedule-third-party-apps-syncs' },
+  { cron: env.THIRD_PARTY_APPS_SYNC_CRON },
   async ({ step }) => {
     const organisations = await db
       .select({
@@ -18,9 +18,9 @@ export const scheduleUsersSyncs = inngest.createFunction(
 
     if (organisations.length > 0) {
       await step.sendEvent(
-        'sync-organisations-users',
+        'sync-organisations-apps',
         organisations.map(({ id, installationId, accountLogin, region }) => ({
-          name: 'github/users.page_sync.requested',
+          name: 'github/third_party_apps.page_sync.requested',
           data: {
             installationId,
             organisationId: id,
