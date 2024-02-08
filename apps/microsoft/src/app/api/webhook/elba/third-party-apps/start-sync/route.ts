@@ -8,7 +8,10 @@ export const runtime = 'edge';
 
 export const POST = async (req: NextRequest) => {
   const eventData: unknown = await req.json();
-  const { organisationId } = parseWebhookEventData('third_party_apps.scan_triggered', eventData);
+  const { organisationId } = parseWebhookEventData(
+    'third_party_apps.start_sync_requested',
+    eventData
+  );
 
   await startThirdPartyAppsSync(organisationId);
 
