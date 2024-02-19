@@ -34,7 +34,7 @@ describe('refreshToken', () => {
   beforeEach(async () => {
     vi.setSystemTime(TOKEN_GENERATED_AT);
     vi.clearAllMocks();
-    await insertOrganisations({});
+    await insertOrganisations();
     vi.spyOn(crypto, 'decrypt').mockResolvedValue('token');
   });
 
@@ -89,7 +89,7 @@ describe('refreshToken', () => {
       subMinutes(new Date(TOKEN_EXPIRES_AT), 30)
     );
     expect(step.sendEvent).toBeCalledTimes(1);
-    expect(step.sendEvent).toBeCalledWith('dropbox-next-refresh', {
+    expect(step.sendEvent).toBeCalledWith('refresh-token', {
       name: 'dropbox/token.refresh.triggered',
       data: {
         organisationId,
