@@ -1,4 +1,5 @@
-import { getToken } from '@/connectors/microsoft/auth/auth';
+import { addSeconds } from 'date-fns/addSeconds';
+import { getToken } from '@/connectors/microsoft/auth';
 import { encrypt } from '@/common/crypto';
 import { organisationsTable } from '@/database/schema';
 import { db } from '@/database/client';
@@ -16,7 +17,6 @@ export const setupOrganisation = async ({
   tenantId,
 }: SetupOrganisationParams) => {
   const { token, expiresIn } = await getToken(tenantId);
-
   const encodedToken = await encrypt(token);
 
   await db
@@ -38,7 +38,7 @@ export const setupOrganisation = async ({
 
   await inngest.send([
     {
-      name: 'teams/teams.elba_app.installed',
+      name: 'teams/app.installed',
       data: {
         organisationId,
       },
@@ -53,17 +53,10 @@ export const setupOrganisation = async ({
       },
     },
     {
-      name: 'teams/teams.sync.triggered',
-      data: {
-        organisationId,
-        skipToken: null,
-      },
-    },
-    {
       name: 'teams/token.refresh.triggered',
       data: {
         organisationId,
-        expiresIn,
+        expiresAt: addSeconds(new Date(), expiresIn).getTime(),
       },
     },
   ]);
