@@ -3,8 +3,8 @@ import { Elba } from '@elba-security/sdk';
 import { eq } from 'drizzle-orm';
 import { NonRetriableError } from 'inngest';
 import { logger } from '@elba-security/logger';
-import type { MicrosoftUser } from '@/connectors/microsoft/users';
-import { getUsers } from '@/connectors/microsoft/users';
+import type { MicrosoftUser } from '@/connectors/microsoft/user/users';
+import { getUsers } from '@/connectors/microsoft/user/users';
 import { db } from '@/database/client';
 import { organisationsTable } from '@/database/schema';
 import { env } from '@/env';
@@ -30,7 +30,7 @@ export const syncUsers = inngest.createFunction(
     },
     cancelOn: [
       {
-        event: 'teams/app.installed',
+        event: 'teams/teams.elba_app.installed',
         match: 'data.organisationId',
       },
     ],
