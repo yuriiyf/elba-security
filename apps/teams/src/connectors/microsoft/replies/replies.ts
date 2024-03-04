@@ -1,11 +1,11 @@
 import { env } from '@/env';
+import { messageSchema } from '@/connectors/microsoft/schemes';
+import type { MicrosoftMessage } from '@/connectors/microsoft/types';
 import { MicrosoftError } from '../commons/error';
 import {
   getNextSkipTokenFromNextLink,
   type MicrosoftPaginatedResponse,
 } from '../commons/pagination';
-import { z } from 'zod';
-import { MicrosoftTeam } from '@/connectors/microsoft/teams/teams';
 
 export type GetMessagesParams = {
   token: string;
@@ -14,22 +14,6 @@ export type GetMessagesParams = {
   skipToken?: string | null;
   messageId: string;
 };
-
-const repliesSchema = z.object({
-  id: z.string(),
-  webUrl: z.string().url(),
-  subject: z.string(),
-  body: z.object({
-    content: z.string(),
-  }),
-  from: z.object({
-    user: z.object({
-      id: z.string(),
-    }),
-  }),
-});
-
-export type MicrosoftReply = z.infer<typeof repliesSchema>;
 
 export const getReplies = async ({
   token,
@@ -54,15 +38,15 @@ export const getReplies = async ({
   });
 
   if (!response.ok) {
-    throw new MicrosoftError('Could not retrieve messages', { response });
+    throw new MicrosoftError('Could not retrieve replies', { response });
   }
 
-  const data = (await response.json()) as MicrosoftPaginatedResponse<unknown>;
+  const data = (await response.json()) as MicrosoftPaginatedResponse<object>;
 
-  const replies = data.value.reduce((acum: MicrosoftTeam[], team) => {
-    const result = repliesSchema.safeParse(team);
-    return result.success ? [...acum, result.data] : acum;
-  }, []) as MicrosoftTeam[];
+  const replies = data.value.reduce((acc: MicrosoftMessage[], reply) => {
+    const result = messageSchema.safeParse({ ...reply, type: 'reply' });
+    return result.success ? [...acc, result.data] : acc;
+  }, []) as MicrosoftMessage[];
 
   const nextSkipToken = getNextSkipTokenFromNextLink(data['@odata.nextLink']);
 

@@ -8,7 +8,7 @@ import {
 
 const teamSchema = z.object({
   id: z.string(),
-  visibility: z.string(),
+  visibility: z.enum(['private', 'public', 'hiddenMembership']),
 });
 
 export type MicrosoftTeam = z.infer<typeof teamSchema>;

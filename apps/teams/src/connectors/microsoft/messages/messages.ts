@@ -1,5 +1,6 @@
-import { z } from 'zod';
 import { env } from '@/env';
+import { messageSchema } from '@/connectors/microsoft/schemes';
+import type { MicrosoftMessage } from '@/connectors/microsoft/types';
 import { MicrosoftError } from '../commons/error';
 import {
   getNextSkipTokenFromNextLink,
@@ -12,28 +13,6 @@ export type GetMessagesParams = {
   channelId: string;
   skipToken?: string | null;
 };
-
-const messagesSchema = z.object({
-  id: z.string(),
-  webUrl: z.string().url(),
-  etag: z.string(),
-  from: z.object({
-    user: z.object({
-      id: z.string(),
-    }),
-  }),
-  lastEditedDateTime: z.string().nullable(),
-  createdDateTime: z.string(),
-  messageType: z.enum([
-    'typing',
-    'message',
-    'chatEvent',
-    'unknownFutureValue',
-    'systemEventMessage',
-  ]),
-});
-
-export type MicrosoftMessage = z.infer<typeof messagesSchema>;
 
 export const getMessages = async ({ token, teamId, skipToken, channelId }: GetMessagesParams) => {
   const url = new URL(`${env.MICROSOFT_API_URL}/teams/${teamId}/channels/${channelId}/messages`);
@@ -54,13 +33,13 @@ export const getMessages = async ({ token, teamId, skipToken, channelId }: GetMe
     throw new MicrosoftError('Could not retrieve messages', { response });
   }
 
-  const data = (await response.json()) as MicrosoftPaginatedResponse<unknown>;
+  const data = (await response.json()) as MicrosoftPaginatedResponse<object>;
 
   const validMessages: MicrosoftMessage[] = [];
   const invalidMessages: unknown[] = [];
 
   for (const message of data.value) {
-    const result = messagesSchema.safeParse(message);
+    const result = messageSchema.safeParse({ ...message, type: 'message' });
     if (result.success) {
       if (result.data.messageType === 'message') {
         validMessages.push(result.data);

@@ -5,7 +5,7 @@ import { http } from 'msw';
 import { describe, expect, test, beforeEach } from 'vitest';
 import { env } from '@/env';
 import { getReplies } from '@/connectors/microsoft/replies/replies';
-import  type { MicrosoftReply } from '@/connectors/microsoft/replies/replies';
+import type { MicrosoftMessage } from '@/connectors/microsoft/types';
 import { server } from '../../../../vitest/setup-msw-handlers';
 import { MicrosoftError } from '../commons/error';
 
@@ -19,13 +19,16 @@ const endSkipToken = 'end-skip-token';
 const nextSkipToken = 'next-skip-token';
 
 function createRepliesArray() {
-  const objectsArray: MicrosoftReply[] = [];
+  const objectsArray: MicrosoftMessage[] = [];
 
   for (let i = 0; i < 2; i++) {
-    const obj: MicrosoftReply = {
+    const obj: MicrosoftMessage = {
       id: `some-id-${i}`,
       webUrl: `http://wb.uk-${i}`,
-      subject: `title-${i}`,
+      etag: `122123213`,
+      createdDateTime: `2023-03-28T21:11:12.395Z`,
+      lastEditedDateTime: `2024-02-28T21:11:12.395Z`,
+      messageType: 'message',
       body: {
         content: `content-${i}`,
       },
@@ -34,6 +37,7 @@ function createRepliesArray() {
           id: `user-id-${i}`,
         },
       },
+      type: 'reply',
     };
     objectsArray.push(obj);
   }

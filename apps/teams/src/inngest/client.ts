@@ -65,6 +65,8 @@ export const inngest = new Inngest({
         teamId: string;
         channelId: string;
         messageId: string;
+        channelName: string;
+        membershipType: string;
       };
     };
     'teams/replies.sync.completed': {

@@ -1,31 +1,25 @@
 import type { DataProtectionObject } from '@elba-security/sdk';
-import type { MicrosoftMessage } from '@/connectors/microsoft/messages/messages';
+import type { MicrosoftMessage } from '@/connectors/microsoft/types';
 import type { MessageMetadata } from './metadata';
 
 export const formatDataProtectionObject = ({
   teamId,
-  channelId,
   messageId,
-  organisationId,
   message,
-  updatedAt,
+  organisationId,
   membershipType,
   channelName,
+  channelId,
   timestamp,
-  webUrl,
-    etag
 }: {
   teamId: string;
   channelId: string;
   organisationId: string;
   messageId: string;
   membershipType: string;
-  message: MicrosoftMessage;
-  updatedAt: string | null;
   channelName: string;
   timestamp: string;
-  webUrl: string;
-  etag:string
+  message: MicrosoftMessage;
 }): DataProtectionObject => {
   return {
     id: messageId,
@@ -35,9 +29,9 @@ export const formatDataProtectionObject = ({
       organisationId,
       channelId,
       messageId,
-      type: 'message',
+      type: message.type,
     } satisfies MessageMetadata,
-    updatedAt: updatedAt ?? undefined,
+    updatedAt: message.lastEditedDateTime ?? undefined,
     ownerId: message.from.user.id,
     permissions: [
       membershipType === 'shared'
@@ -50,7 +44,7 @@ export const formatDataProtectionObject = ({
             id: 'domain',
           },
     ],
-    url: webUrl,
-    contentHash: etag
+    url: message.webUrl,
+    contentHash: message.etag,
   };
 };

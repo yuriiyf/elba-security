@@ -6,6 +6,8 @@ import { env } from '@/env';
 import { inngest } from '@/inngest/client';
 import { decrypt } from '@/common/crypto';
 import { getReplies } from '@/connectors/microsoft/replies/replies';
+import { createElbaClient } from '@/connectors/elba/client';
+import { formatDataProtectionObject } from '@/connectors/elba/data-protection/object';
 
 export const syncReplies = inngest.createFunction(
   {
@@ -27,7 +29,8 @@ export const syncReplies = inngest.createFunction(
   },
   { event: 'teams/replies.sync.triggered' },
   async ({ event, step }) => {
-    const { organisationId, teamId, skipToken, channelId, messageId } = event.data;
+    const { organisationId, teamId, skipToken, channelId, messageId, membershipType, channelName } =
+      event.data;
 
     const [organisation] = await db
       .select({
@@ -42,16 +45,39 @@ export const syncReplies = inngest.createFunction(
       throw new NonRetriableError(`Could not retrieve organisation with id=${organisationId}`);
     }
 
-    const { nextSkipToken } = await step.run('paginate', async () => {
-      const result = await getReplies({
+    const { nextSkipToken, replies } = await step.run('paginate', async () => {
+      return getReplies({
         token: await decrypt(organisation.token),
         teamId,
         skipToken,
         channelId,
         messageId,
       });
+    });
 
-      return result;
+    const elbaClient = createElbaClient(organisationId, organisation.region);
+
+    await step.run('elba-data-sync', async () => {
+      if (!replies.length) {
+        return;
+      }
+
+      const objects = replies.map((reply) => {
+        const timestamp = new Date(reply.createdDateTime).getTime();
+
+        return formatDataProtectionObject({
+          teamId,
+          messageId,
+          channelId,
+          channelName,
+          organisationId,
+          membershipType,
+          message: reply,
+          timestamp: String(timestamp),
+        });
+      });
+
+      await elbaClient.dataProtection.updateObjects({ objects });
     });
 
     if (nextSkipToken) {

@@ -46,15 +46,15 @@ export const syncMessages = inngest.createFunction(
     }
 
     const { nextSkipToken, validMessages: messages } = await step.run('paginate', async () => {
-      const result = await getMessages({
+      return getMessages({
         token: await decrypt(organisation.token),
         teamId,
         skipToken,
         channelId,
       });
-
-      return result;
     });
+
+    const elbaClient = createElbaClient(organisationId, organisation.region);
 
     await step.run('elba-data-sync', async () => {
       if (!messages.length) {
@@ -67,19 +67,15 @@ export const syncMessages = inngest.createFunction(
         return formatDataProtectionObject({
           teamId,
           messageId: message.id,
-          webUrl: message.webUrl,
-          timestamp: String(timestamp),
-          updatedAt: message.lastEditedDateTime,
-          etag: message.etag,
+          channelId,
+          channelName,
           organisationId,
           membershipType,
-          channelName,
-          channelId,
           message,
+          timestamp: String(timestamp),
         });
       });
 
-      const elbaClient = createElbaClient(organisationId, organisation.region);
       await elbaClient.dataProtection.updateObjects({ objects });
     });
 
@@ -102,6 +98,8 @@ export const syncMessages = inngest.createFunction(
             channelId,
             organisationId,
             teamId,
+            channelName,
+            membershipType,
           },
         }))
       );

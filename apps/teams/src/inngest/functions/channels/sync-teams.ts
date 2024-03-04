@@ -43,12 +43,10 @@ export const syncTeams = inngest.createFunction(
     }
 
     const { teams, nextSkipToken } = await step.run('paginate', async () => {
-      const result = await getTeams({
+      return getTeams({
         token: await decrypt(organisation.token),
         skipToken,
       });
-
-      return result;
     });
 
     if (teams.length) {

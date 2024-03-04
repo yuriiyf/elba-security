@@ -4,7 +4,7 @@
 import { http } from 'msw';
 import { describe, expect, test, beforeEach } from 'vitest';
 import { env } from '@/env';
-import type { MicrosoftMessage } from '@/connectors/microsoft/messages/messages';
+import type { MicrosoftMessage } from '@/connectors/microsoft/types';
 import { getMessages } from '@/connectors/microsoft/messages/messages';
 import { server } from '../../../../vitest/setup-msw-handlers';
 import { MicrosoftError } from '../commons/error';
@@ -27,12 +27,16 @@ function createValidMessagesArray() {
       etag: `122123213`,
       createdDateTime: `2023-03-28T21:11:12.395Z`,
       lastEditedDateTime: `2024-02-28T21:11:12.395Z`,
+      body: {
+        content: `content-${i}`,
+      },
       from: {
         user: {
           id: `user-id-${i}`,
         },
       },
       messageType: 'message',
+      type: 'message',
     };
     objectsArray.push(obj);
   }
