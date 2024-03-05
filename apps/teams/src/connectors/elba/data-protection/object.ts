@@ -2,6 +2,9 @@ import type { DataProtectionObject } from '@elba-security/sdk';
 import type { MicrosoftMessage } from '@/connectors/microsoft/types';
 import type { MessageMetadata } from './metadata';
 
+export const convertISOToDate = (isoDate: string) => {
+  return isoDate.split('T')[0];
+};
 export const formatDataProtectionObject = ({
   teamId,
   messageId,
@@ -10,7 +13,6 @@ export const formatDataProtectionObject = ({
   membershipType,
   channelName,
   channelId,
-  timestamp,
 }: {
   teamId: string;
   channelId: string;
@@ -18,12 +20,13 @@ export const formatDataProtectionObject = ({
   messageId: string;
   membershipType: string;
   channelName: string;
-  timestamp: string;
   message: MicrosoftMessage;
 }): DataProtectionObject => {
+  const creationDate = convertISOToDate(message.createdDateTime);
+
   return {
     id: messageId,
-    name: `#${channelName} - ${timestamp}`,
+    name: `#${channelName} - ${creationDate}`,
     metadata: {
       teamId,
       organisationId,

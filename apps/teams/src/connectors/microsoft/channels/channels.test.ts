@@ -23,7 +23,7 @@ const invalidChannels = [
 function createValidChannelsArray() {
   const objectsArray: MicrosoftChannel[] = [];
 
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < Number(env.CHANNEL_SYNC_BATCH_SIZE) - invalidChannels.length; i++) {
     const obj: MicrosoftChannel = {
       id: `channel-id-${i}`,
       membershipType: `shared`,

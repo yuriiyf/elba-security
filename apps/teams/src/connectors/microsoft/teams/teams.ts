@@ -39,12 +39,19 @@ export const getTeams = async ({ token, skipToken }: GetTeamsParams) => {
 
   const data = (await response.json()) as MicrosoftPaginatedResponse<unknown>;
 
-  const teams = data.value.reduce<MicrosoftTeam[]>((acum, team) => {
+  const validTeams: MicrosoftTeam[] = [];
+  const invalidTeams: unknown[] = [];
+
+  for (const team of data.value) {
     const result = teamSchema.safeParse(team);
-    return result.success ? [...acum, result.data] : acum;
-  }, []);
+    if (result.success) {
+      validTeams.push(result.data);
+    } else {
+      invalidTeams.push(team);
+    }
+  }
 
   const nextSkipToken = getNextSkipTokenFromNextLink(data['@odata.nextLink']);
 
-  return { nextSkipToken, teams };
+  return { nextSkipToken, validTeams, invalidTeams };
 };

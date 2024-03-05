@@ -8,6 +8,7 @@ import { encrypt } from '@/common/crypto';
 import type { MicrosoftMessage } from '@/connectors/microsoft/types';
 import type { MessageMetadata } from '@/connectors/elba/data-protection/metadata';
 import { syncMessages } from '@/inngest/functions/channels/sync-messages';
+import { convertISOToDate } from '@/connectors/elba/data-protection/object';
 
 const token = 'token';
 const startSkipToken = 'start-skip-token';
@@ -119,7 +120,7 @@ describe('sync-messages', () => {
       objects: [
         {
           id: 'message-id-0',
-          name: `#channel-name - ${new Date('2023-03-28T21:11:12.395Z').getTime()}`,
+          name: `#channel-name - ${convertISOToDate('2023-03-28T21:11:12.395Z')}`,
           metadata: {
             teamId: data.teamId,
             organisationId: data.organisationId,
@@ -145,7 +146,7 @@ describe('sync-messages', () => {
         },
         {
           id: 'message-id-1',
-          name: `#channel-name - ${new Date('2023-03-28T21:11:12.395Z').getTime()}`,
+          name: `#channel-name - ${convertISOToDate('2023-03-28T21:11:12.395Z')}`,
           metadata: {
             teamId: data.teamId,
             organisationId: data.organisationId,
@@ -244,7 +245,7 @@ describe('sync-messages', () => {
       objects: [
         {
           id: 'message-id-0',
-          name: `#channel-name - ${new Date('2023-03-28T21:11:12.395Z').getTime()}`,
+          name: `#channel-name - ${convertISOToDate('2023-03-28T21:11:12.395Z')}`,
           metadata: {
             teamId: data.teamId,
             organisationId: data.organisationId,
@@ -270,7 +271,7 @@ describe('sync-messages', () => {
         },
         {
           id: 'message-id-1',
-          name: `#channel-name - ${new Date('2023-03-28T21:11:12.395Z').getTime()}`,
+          name: `#channel-name - ${convertISOToDate('2023-03-28T21:11:12.395Z')}`,
           metadata: {
             teamId: data.teamId,
             organisationId: data.organisationId,

@@ -85,6 +85,7 @@ describe('setupOrganisation', () => {
         name: 'teams/token.refresh.triggered',
         data: {
           organisationId: organisation.id,
+          expiresIn,
         },
       },
     ]);
@@ -147,6 +148,7 @@ describe('setupOrganisation', () => {
         name: 'teams/token.refresh.triggered',
         data: {
           organisationId: organisation.id,
+          expiresIn,
         },
       },
     ]);

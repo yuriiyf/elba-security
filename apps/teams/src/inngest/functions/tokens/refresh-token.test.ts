@@ -40,6 +40,7 @@ describe('refresh-token', () => {
 
     const [result, { step }] = setup({
       organisationId: organisation.id,
+      expiresIn,
     });
 
     await expect(result).rejects.toBeInstanceOf(NonRetriableError);
@@ -58,6 +59,7 @@ describe('refresh-token', () => {
 
     const [result, { step }] = setup({
       organisationId: organisation.id,
+      expiresIn,
     });
 
     await expect(result).resolves.toBe(undefined);
@@ -76,6 +78,7 @@ describe('refresh-token', () => {
       name: 'teams/token.refresh.triggered',
       data: {
         organisationId: organisation.id,
+        expiresIn,
       },
     });
   });

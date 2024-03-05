@@ -38,17 +38,25 @@ export const getReplies = async ({
   });
 
   if (!response.ok) {
-    throw new MicrosoftError('Could not retrieve replies', { response });
+    throw new MicrosoftError('Could not retrieve messages', { response });
   }
 
   const data = (await response.json()) as MicrosoftPaginatedResponse<object>;
 
-  const replies = data.value.reduce((acc: MicrosoftMessage[], reply) => {
+  const validReplies: MicrosoftMessage[] = [];
+  const invalidReplies: unknown[] = [];
+
+  for (const reply of data.value) {
     const result = messageSchema.safeParse({ ...reply, type: 'reply' });
-    return result.success ? [...acc, result.data] : acc;
-  }, []) as MicrosoftMessage[];
+
+    if (result.success) {
+      validReplies.push(result.data);
+    } else {
+      invalidReplies.push(reply);
+    }
+  }
 
   const nextSkipToken = getNextSkipTokenFromNextLink(data['@odata.nextLink']);
 
-  return { nextSkipToken, replies };
+  return { nextSkipToken, validReplies, invalidReplies };
 };

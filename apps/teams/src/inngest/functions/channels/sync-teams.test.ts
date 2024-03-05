@@ -27,17 +27,23 @@ const data = {
   skipToken: startSkipToken,
 };
 
-const teams: MicrosoftTeam[] = [
+const validTeams: MicrosoftTeam[] = [
   { id: 'team-id-1', visibility: 'public' },
   { id: 'team-id-2', visibility: 'public' },
   { id: 'team-id-3', visibility: 'private' },
+];
+
+const invalidTeams = [
+  { id: 'team-id-2', visibility: 'public', status: 'private' },
+  { id: 'team-id-1', visibility: 'public', status: 'private' },
 ];
 
 describe('sync-teams', () => {
   test('should abort sync when organisation is not registered', async () => {
     const getTeams = vi.spyOn(teamConnector, 'getTeams').mockResolvedValue({
       nextSkipToken,
-      teams,
+      validTeams,
+      invalidTeams,
     });
     const [result, { step }] = setup(data);
 
@@ -53,7 +59,8 @@ describe('sync-teams', () => {
 
     const getTeams = vi.spyOn(teamConnector, 'getTeams').mockResolvedValue({
       nextSkipToken,
-      teams,
+      validTeams,
+      invalidTeams,
     });
 
     const [result, { step }] = setup(data);
@@ -121,7 +128,8 @@ describe('sync-teams', () => {
 
     const getTeams = vi.spyOn(teamConnector, 'getTeams').mockResolvedValue({
       nextSkipToken: null,
-      teams,
+      validTeams,
+      invalidTeams,
     });
 
     const [result, { step }] = setup(data);

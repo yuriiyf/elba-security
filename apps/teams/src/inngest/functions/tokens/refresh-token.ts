@@ -1,6 +1,7 @@
 import { addSeconds } from 'date-fns/addSeconds';
 import { and, eq } from 'drizzle-orm';
 import { NonRetriableError } from 'inngest';
+import { subMinutes } from 'date-fns/subMinutes';
 import { db } from '@/database/client';
 import { organisationsTable } from '@/database/schema';
 import { inngest } from '@/inngest/client';
@@ -25,9 +26,9 @@ export const refreshToken = inngest.createFunction(
   },
   { event: 'teams/token.refresh.triggered' },
   async ({ event, step }) => {
-    await step.sleepUntil('wait', addSeconds(new Date(), 1030));
+    const { organisationId, expiresIn } = event.data;
 
-    const { organisationId } = event.data;
+    await step.sleepUntil('wait', subMinutes(addSeconds(new Date(), expiresIn), 5));
 
     const [organisation] = await db
       .select({
@@ -53,6 +54,7 @@ export const refreshToken = inngest.createFunction(
       name: 'teams/token.refresh.triggered',
       data: {
         organisationId,
+        expiresIn,
       },
     });
   }

@@ -18,10 +18,25 @@ const startSkipToken = 'start-skip-token';
 const endSkipToken = 'end-skip-token';
 const nextSkipToken = 'next-skip-token';
 
-function createRepliesArray() {
+const invalidReplies = [
+  {
+    etag: `122123213`,
+    createdDateTime: `2023-03-28T21:11:12.395Z`,
+    lastEditedDateTime: `2024-02-28T21:11:12.395Z`,
+    type: 'reply',
+  },
+  {
+    etag: `122123213`,
+    createdDateTime: `2023-03-28T21:11:12.395Z`,
+    lastEditedDateTime: `2024-02-28T21:11:12.395Z`,
+    type: 'reply',
+  },
+];
+
+function createValidArray() {
   const objectsArray: MicrosoftMessage[] = [];
 
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < Number(env.REPLIES_SYNC_BATCH_SIZE) - invalidReplies.length; i++) {
     const obj: MicrosoftMessage = {
       id: `some-id-${i}`,
       webUrl: `http://wb.uk-${i}`,
@@ -45,7 +60,9 @@ function createRepliesArray() {
   return objectsArray;
 }
 
-const replies = createRepliesArray();
+const validReplies = createValidArray();
+
+const replies = [...validReplies, ...invalidReplies];
 
 describe('getReplies', () => {
   beforeEach(() => {
@@ -84,7 +101,8 @@ describe('getReplies', () => {
       getReplies({ teamId, channelId, messageId, token: validToken, skipToken: startSkipToken })
     ).resolves.toStrictEqual({
       nextSkipToken,
-      replies,
+      validReplies,
+      invalidReplies,
     });
   });
 
@@ -92,7 +110,8 @@ describe('getReplies', () => {
     await expect(
       getReplies({ teamId, channelId, messageId, token: validToken, skipToken: endSkipToken })
     ).resolves.toStrictEqual({
-      replies,
+      validReplies,
+      invalidReplies,
       nextSkipToken: null,
     });
   });

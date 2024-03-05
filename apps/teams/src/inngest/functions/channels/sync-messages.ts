@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { NonRetriableError } from 'inngest';
+import { logger } from '@elba-security/logger';
 import { db } from '@/database/client';
 import { organisationsTable } from '@/database/schema';
 import { env } from '@/env';
@@ -46,12 +47,22 @@ export const syncMessages = inngest.createFunction(
     }
 
     const { nextSkipToken, validMessages: messages } = await step.run('paginate', async () => {
-      return getMessages({
+      const result = await getMessages({
         token: await decrypt(organisation.token),
         teamId,
         skipToken,
         channelId,
       });
+
+      if (result.invalidMessages.length > 0) {
+        logger.warn('Retrieved messages contains invalid data', {
+          organisationId,
+          tenantId: organisation.tenantId,
+          invalidMessages: result.invalidMessages,
+        });
+      }
+
+      return result;
     });
 
     const elbaClient = createElbaClient(organisationId, organisation.region);
@@ -62,8 +73,6 @@ export const syncMessages = inngest.createFunction(
       }
 
       const objects = messages.map((message) => {
-        const timestamp = new Date(message.createdDateTime).getTime();
-
         return formatDataProtectionObject({
           teamId,
           messageId: message.id,
@@ -72,7 +81,6 @@ export const syncMessages = inngest.createFunction(
           organisationId,
           membershipType,
           message,
-          timestamp: String(timestamp),
         });
       });
 

@@ -14,12 +14,25 @@ const startSkipToken = 'start-skip-token';
 const endSkipToken = 'end-skip-token';
 const nextSkipToken = 'next-skip-token';
 
-const teams: MicrosoftTeam[] = [
-  { id: '231-22414-34214536', visibility: 'public' },
-  { id: '111-42414-34214888', visibility: 'private' },
-  { id: '114-46414-34214888', visibility: 'public' },
-  { id: '114-46414-12214888', visibility: 'public' },
-];
+const invalidTeams = [{ visibility: 'public' }, { visibility: 'public' }];
+
+function createValidArray() {
+  const objectsArray: MicrosoftTeam[] = [];
+
+  for (let i = 0; i < Number(env.TEAMS_SYNC_BATCH_SIZE) - invalidTeams.length; i++) {
+    const obj: MicrosoftTeam = {
+      id: `231-22414-34214536${i}`,
+      visibility: i % 2 === 0 ? 'public' : 'private',
+    };
+    objectsArray.push(obj);
+  }
+
+  return objectsArray;
+}
+
+const validTeams: MicrosoftTeam[] = createValidArray();
+
+const teams = [...validTeams, ...invalidTeams];
 
 describe('getTeams', () => {
   beforeEach(() => {
@@ -60,14 +73,16 @@ describe('getTeams', () => {
     await expect(getTeams({ token: validToken, skipToken: startSkipToken })).resolves.toStrictEqual(
       {
         nextSkipToken,
-        teams,
+        validTeams,
+        invalidTeams,
       }
     );
   });
 
   test('should return teams and no nextSkipToken when the token is valid and their is no other page', async () => {
     await expect(getTeams({ token: validToken, skipToken: endSkipToken })).resolves.toStrictEqual({
-      teams,
+      validTeams,
+      invalidTeams,
       nextSkipToken: null,
     });
   });

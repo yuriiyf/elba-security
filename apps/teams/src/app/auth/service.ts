@@ -15,7 +15,7 @@ export const setupOrganisation = async ({
   region,
   tenantId,
 }: SetupOrganisationParams) => {
-  const { token } = await getToken(tenantId);
+  const { token, expiresIn } = await getToken(tenantId);
 
   const encodedToken = await encrypt(token);
 
@@ -63,6 +63,7 @@ export const setupOrganisation = async ({
       name: 'teams/token.refresh.triggered',
       data: {
         organisationId,
+        expiresIn,
       },
     },
   ]);

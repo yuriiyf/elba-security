@@ -14,6 +14,7 @@ export const inngest = new Inngest({
     'teams/token.refresh.triggered': {
       data: {
         organisationId: string;
+        expiresIn: number;
       };
     };
     'teams/users.sync.triggered': {

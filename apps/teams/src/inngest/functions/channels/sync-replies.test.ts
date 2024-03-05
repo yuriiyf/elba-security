@@ -8,6 +8,7 @@ import { encrypt } from '@/common/crypto';
 import { syncReplies } from '@/inngest/functions/channels/sync-replies';
 import type { MicrosoftMessage } from '@/connectors/microsoft/types';
 import type { MessageMetadata } from '@/connectors/elba/data-protection/metadata';
+import { convertISOToDate } from '@/connectors/elba/data-protection/object';
 
 const token = 'token';
 const startSkipToken = 'start-skip-token';
@@ -34,7 +35,7 @@ const data = {
   membershipType,
 };
 
-function createRepliesArray() {
+function createValidRepliesArray() {
   const objectsArray: MicrosoftMessage[] = [];
 
   for (let i = 0; i < 2; i++) {
@@ -42,8 +43,8 @@ function createRepliesArray() {
       id: `message-id-${i}`,
       webUrl: `http://wb.uk-${i}.com`,
       etag: `122123213`,
-      createdDateTime: `2023-03-28T21:11:12.395Z`,
-      lastEditedDateTime: `2024-02-28T21:11:12.395Z`,
+      createdDateTime: '2023-03-28T21:11:12.395Z',
+      lastEditedDateTime: '2024-02-28T21:11:12.395Z',
       messageType: 'message',
       body: {
         content: `content-${i}`,
@@ -61,13 +62,25 @@ function createRepliesArray() {
   return objectsArray;
 }
 
-const replies = createRepliesArray();
+const validReplies = createValidRepliesArray();
+
+const invalidReplies = [
+  {
+    id: `some-id-1`,
+    webUrl: `http://wb.uk.com`,
+    etag: `122123213`,
+    createdDateTime: `2023-03-28T21:11:12.395Z`,
+    lastEditedDateTime: `2024-02-28T21:11:12.395Z`,
+    type: 'reply',
+  },
+];
 
 describe('sync-channels', () => {
   test('should abort sync when organisation is not registered', async () => {
     const getReplies = vi.spyOn(replyConnector, 'getReplies').mockResolvedValue({
       nextSkipToken,
-      replies,
+      validReplies,
+      invalidReplies,
     });
     const [result, { step }] = setup(data);
 
@@ -85,7 +98,8 @@ describe('sync-channels', () => {
 
     const getReplies = vi.spyOn(replyConnector, 'getReplies').mockResolvedValue({
       nextSkipToken,
-      replies,
+      validReplies,
+      invalidReplies,
     });
 
     const [result, { step }] = setup(data);
@@ -100,7 +114,7 @@ describe('sync-channels', () => {
       objects: [
         {
           id: data.messageId,
-          name: `#channel-name - ${new Date('2023-03-28T21:11:12.395Z').getTime()}`,
+          name: `#channel-name - ${convertISOToDate('2023-03-28T21:11:12.395Z')}`,
           metadata: {
             teamId: data.teamId,
             organisationId: data.organisationId,
@@ -126,7 +140,7 @@ describe('sync-channels', () => {
         },
         {
           id: data.messageId,
-          name: `#channel-name - ${new Date('2023-03-28T21:11:12.395Z').getTime()}`,
+          name: `#channel-name - ${convertISOToDate('2023-03-28T21:11:12.395Z')}`,
           metadata: {
             teamId: data.teamId,
             organisationId: data.organisationId,
@@ -176,7 +190,8 @@ describe('sync-channels', () => {
 
     const getReplies = vi.spyOn(replyConnector, 'getReplies').mockResolvedValue({
       nextSkipToken: null,
-      replies,
+      validReplies,
+      invalidReplies,
     });
     const [result, { step }] = setup(data);
 
@@ -190,7 +205,7 @@ describe('sync-channels', () => {
       objects: [
         {
           id: data.messageId,
-          name: `#channel-name - ${new Date('2023-03-28T21:11:12.395Z').getTime()}`,
+          name: `#channel-name - ${convertISOToDate('2023-03-28T21:11:12.395Z')}`,
           metadata: {
             teamId: data.teamId,
             organisationId: data.organisationId,
@@ -216,7 +231,7 @@ describe('sync-channels', () => {
         },
         {
           id: data.messageId,
-          name: `#channel-name - ${new Date('2023-03-28T21:11:12.395Z').getTime()}`,
+          name: `#channel-name - ${convertISOToDate('2023-03-28T21:11:12.395Z')}`,
           metadata: {
             teamId: data.teamId,
             organisationId: data.organisationId,

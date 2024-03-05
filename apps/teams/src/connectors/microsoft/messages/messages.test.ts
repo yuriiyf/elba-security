@@ -17,34 +17,6 @@ const startSkipToken = 'start-skip-token';
 const endSkipToken = 'end-skip-token';
 const nextSkipToken = 'next-skip-token';
 
-function createValidMessagesArray() {
-  const objectsArray: MicrosoftMessage[] = [];
-
-  for (let i = 0; i < 4; i++) {
-    const obj: MicrosoftMessage = {
-      id: `some-id-${i}`,
-      webUrl: `http://wb.uk-${i}.com`,
-      etag: `122123213`,
-      createdDateTime: `2023-03-28T21:11:12.395Z`,
-      lastEditedDateTime: `2024-02-28T21:11:12.395Z`,
-      body: {
-        content: `content-${i}`,
-      },
-      from: {
-        user: {
-          id: `user-id-${i}`,
-        },
-      },
-      messageType: 'message',
-      type: 'message',
-    };
-    objectsArray.push(obj);
-  }
-
-  return objectsArray;
-}
-
-const validMessages = createValidMessagesArray();
 const invalidMessages = [
   {
     id: `some-id-1`,
@@ -63,6 +35,35 @@ const invalidMessages = [
     messageType: 'chatEvent',
   },
 ];
+
+function createValidMessagesArray() {
+  const objectsArray: MicrosoftMessage[] = [];
+
+  for (let i = 0; i < Number(env.MESSAGES_SYNC_BATCH_SIZE) - invalidMessages.length; i++) {
+    const obj: MicrosoftMessage = {
+      id: `some-id-${i}`,
+      webUrl: `http://wb.uk-${i}.com`,
+      etag: `122123213`,
+      createdDateTime: `2023-03-28T21:11:12.395Z`,
+      lastEditedDateTime: `2024-02-28T21:11:12.395Z`,
+      body: {
+        content: 'test',
+      },
+      from: {
+        user: {
+          id: `user-id-${i}`,
+        },
+      },
+      messageType: 'message',
+      type: 'message',
+    };
+    objectsArray.push(obj);
+  }
+
+  return objectsArray;
+}
+
+const validMessages = createValidMessagesArray();
 
 const messages = [...validMessages, ...invalidMessages];
 describe('getMessages', () => {

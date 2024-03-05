@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { NonRetriableError } from 'inngest';
+import { logger } from '@elba-security/logger';
 import { db } from '@/database/client';
 import { organisationsTable } from '@/database/schema';
 import { env } from '@/env';
@@ -42,11 +43,21 @@ export const syncTeams = inngest.createFunction(
       throw new NonRetriableError(`Could not retrieve organisation with id=${organisationId}`);
     }
 
-    const { teams, nextSkipToken } = await step.run('paginate', async () => {
-      return getTeams({
+    const { validTeams: teams, nextSkipToken } = await step.run('paginate', async () => {
+      const result = await getTeams({
         token: await decrypt(organisation.token),
         skipToken,
       });
+
+      if (result.invalidTeams.length > 0) {
+        logger.warn('Retrieved teams contains invalid data', {
+          organisationId,
+          tenantId: organisation.tenantId,
+          invalidTeams: result.invalidTeams,
+        });
+      }
+
+      return result;
     });
 
     if (teams.length) {
