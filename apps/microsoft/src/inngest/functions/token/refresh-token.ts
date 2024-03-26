@@ -28,11 +28,11 @@ export const refreshToken = inngest.createFunction(
     ],
     retries: env.TOKEN_REFRESH_MAX_RETRY,
   },
-  { event: 'microsoft/token.refresh.triggered' },
+  { event: 'microsoft/token.refresh.requested' },
   async ({ event, step }) => {
     const { organisationId, expiresAt } = event.data;
 
-    await step.sleepUntil('wait-before-expiration', subMinutes(new Date(expiresAt), 5));
+    await step.sleepUntil('wait-before-expiration', subMinutes(new Date(expiresAt), 30));
 
     const nextExpiresAt = await step.run('refresh-token', async () => {
       const [organisation] = await db
@@ -59,7 +59,7 @@ export const refreshToken = inngest.createFunction(
     });
 
     await step.sendEvent('next-refresh', {
-      name: 'microsoft/token.refresh.triggered',
+      name: 'microsoft/token.refresh.requested',
       data: {
         organisationId,
         expiresAt: new Date(nextExpiresAt).getTime(),

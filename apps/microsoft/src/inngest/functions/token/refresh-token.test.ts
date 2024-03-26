@@ -25,7 +25,7 @@ const expiresAt = now.getTime() + 60 * 1000;
 // next token duration
 const expiresIn = 60 * 1000;
 
-const setup = createInngestFunctionMock(refreshToken, 'microsoft/token.refresh.triggered');
+const setup = createInngestFunctionMock(refreshToken, 'microsoft/token.refresh.requested');
 
 describe('refresh-token', () => {
   beforeAll(() => {
@@ -79,12 +79,12 @@ describe('refresh-token', () => {
     expect(step.sleepUntil).toBeCalledTimes(1);
     expect(step.sleepUntil).toBeCalledWith(
       'wait-before-expiration',
-      new Date(expiresAt - 5 * 60 * 1000)
+      new Date(expiresAt - 30 * 60 * 1000)
     );
 
     expect(step.sendEvent).toBeCalledTimes(1);
     expect(step.sendEvent).toBeCalledWith('next-refresh', {
-      name: 'microsoft/token.refresh.triggered',
+      name: 'microsoft/token.refresh.requested',
       data: {
         organisationId: organisation.id,
         expiresAt: now.getTime() + expiresIn * 1000,
