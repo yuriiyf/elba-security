@@ -9,6 +9,7 @@ import { decrypt } from '@/common/crypto';
 import { getMessages } from '@/connectors/microsoft/messages/messages';
 import { createElbaClient } from '@/connectors/elba/client';
 import { formatDataProtectionObject } from '@/connectors/elba/data-protection/object';
+import { chunkObjects } from '@/common/utils';
 
 export const syncMessages = inngest.createFunction(
   {
@@ -74,14 +75,10 @@ export const syncMessages = inngest.createFunction(
         (message) => message.messageType === 'message'
       );
 
-      return { ...messages, validMessages: filterMessages };
-    });
-
-    await step.run('elba-data-sync', async () => {
       const elbaClient = createElbaClient(organisationId, organisation.region);
 
-      if (validMessages.length) {
-        const objects = validMessages
+      if (filterMessages.length) {
+        const formatObjects = filterMessages
           .flatMap((message) => [
             { ...message, messageId: message.id },
             ...message.replies.map((reply) => ({
@@ -103,8 +100,19 @@ export const syncMessages = inngest.createFunction(
             });
           });
 
-        await elbaClient.dataProtection.updateObjects({ objects });
+        const chunkedArray = chunkObjects(formatObjects, 1000);
+
+        await Promise.all(
+          chunkedArray.map((objects) => elbaClient.dataProtection.updateObjects({ objects }))
+        );
       }
+
+      const selectedMessagesFields = filterMessages.map((message) => ({
+        id: message.id,
+        'replies@odata.nextLink': message['replies@odata.nextLink'],
+      }));
+
+      return { ...messages, validMessages: selectedMessagesFields };
     });
 
     await step.run('add-messages-to-db', async () => {

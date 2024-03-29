@@ -8,6 +8,7 @@ export const refreshData = async (data: ElbaPayload) => {
       organisationId: data.organisationId,
       syncStartedAt: new Date().toISOString(),
       skipToken: null,
+      isFirstSync: true,
     },
   });
 };

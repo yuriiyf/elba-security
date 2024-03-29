@@ -8,6 +8,7 @@ export const startDataProtectionSync = async (organisationId: string) => {
         organisationId,
         syncStartedAt: new Date().toISOString(),
         skipToken: null,
+        isFirstSync: true,
       },
     },
     {

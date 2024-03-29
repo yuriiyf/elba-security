@@ -53,6 +53,7 @@ describe('refreshData', () => {
         organisationId: messageData.organisationId,
         syncStartedAt: new Date().toISOString(),
         skipToken: null,
+        isFirstSync: true,
       },
     });
   });
@@ -70,6 +71,7 @@ describe('refreshData', () => {
         organisationId: replyData.organisationId,
         syncStartedAt: new Date().toISOString(),
         skipToken: null,
+        isFirstSync: true,
       },
     });
   });

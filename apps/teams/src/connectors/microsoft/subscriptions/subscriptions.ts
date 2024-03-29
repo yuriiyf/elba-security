@@ -35,7 +35,6 @@ export const createSubscription = async ({
       expirationDateTime: addDays(new Date(), Number(env.SUBSCRIBE_EXPIRATION_DAYS)).toISOString(),
     }),
   });
-
   if (!response.ok) {
     throw new MicrosoftError(`Could not subscribe to resource=${resource}`, { response });
   }

@@ -38,6 +38,7 @@ export const inngest = new Inngest({
         organisationId: string;
         skipToken: string | null;
         syncStartedAt: string;
+        isFirstSync: boolean;
       };
     };
     'teams/channels.sync.triggered': {

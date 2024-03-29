@@ -30,6 +30,7 @@ describe('startDataProtectionSync', () => {
           organisationId,
           syncStartedAt: date,
           skipToken: null,
+          isFirstSync: true,
         },
       },
       {
