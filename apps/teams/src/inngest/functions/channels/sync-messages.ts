@@ -127,7 +127,7 @@ export const syncMessages = inngest.createFunction(
                 ${`{${messagesIds.join(', ')}}`}
                 )`,
           })
-          .where(eq(channelsTable.id, channelId));
+          .where(eq(channelsTable.id, `${organisationId}:${channelId}`));
       }
     });
 

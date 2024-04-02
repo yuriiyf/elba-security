@@ -25,7 +25,7 @@ export const channelCreatedHandler: TeamsEventHandler = async ({ channelId, team
       id: channelsTable.id,
     })
     .from(channelsTable)
-    .where(eq(channelsTable.id, channelId));
+    .where(eq(channelsTable.id, `${organisation.id}:${channelId}`));
 
   if (channelInDb) {
     return { message: 'channel already exists' };
@@ -44,16 +44,18 @@ export const channelCreatedHandler: TeamsEventHandler = async ({ channelId, team
   await db
     .insert(channelsTable)
     .values({
-      id: channelId,
+      id: `${organisation.id}:${channelId}`,
       organisationId: organisation.id,
       membershipType: channel.membershipType,
       displayName: channel.displayName,
+      channelId,
     })
     .onConflictDoNothing();
 
   await inngest.send({
     name: 'teams/channel.subscription.triggered',
     data: {
+      uniqueChannelInOrganisationId: `${organisation.id}:${channel.id}`,
       organisationId: organisation.id,
       channelId: channel.id,
       teamId,

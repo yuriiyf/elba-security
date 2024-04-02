@@ -29,6 +29,7 @@ const data = {
   organisationId: organisation.id,
   teamId: 'team-id',
   channelId: 'channel-id',
+  uniqueChannelInOrganisationId: `${organisation.id}:channel-id`,
 };
 
 const setup = createInngestFunctionMock(

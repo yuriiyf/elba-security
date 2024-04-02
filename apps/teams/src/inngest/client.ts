@@ -96,6 +96,7 @@ export const inngest = new Inngest({
         teamId: string;
         channelId: string;
         organisationId: string;
+        uniqueChannelInOrganisationId: string;
       };
     };
     'teams/teams.webhook.event.received': {

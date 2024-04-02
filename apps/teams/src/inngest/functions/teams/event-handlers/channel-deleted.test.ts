@@ -25,14 +25,16 @@ const organisation = {
 };
 
 const channel = {
-  id: 'channel-id',
+  id: `${organisation.id}:channel-id`,
   membershipType: 'standard',
   displayName: 'channel-name',
   organisationId: organisation.id,
+  channelId: 'channel-id',
 };
 
 const channelWithMessage = {
-  id: 'channel-id',
+  id: `${organisation.id}:channel-id`,
+  channelId: 'channel-id',
   membershipType: 'standard',
   displayName: 'channel-name',
   organisationId: organisation.id,
@@ -92,6 +94,7 @@ describe('channel-deleted', () => {
 
     const deleteSubscription = vi
       .spyOn(subscriptionConnector, 'deleteSubscription')
+      // @ts-expect-error -- this is a mock
       .mockResolvedValue(undefined);
 
     const [result] = setup({
@@ -117,6 +120,7 @@ describe('channel-deleted', () => {
 
     const deleteSubscription = vi
       .spyOn(subscriptionConnector, 'deleteSubscription')
+      // @ts-expect-error -- this is a mock
       .mockResolvedValue(undefined);
 
     const elba = spyOnElba();

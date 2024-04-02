@@ -37,6 +37,7 @@ describe('subscription-refresh', () => {
     await db.insert(organisationsTable).values(organisation);
     const refreshSubscription = vi
       .spyOn(subscriptionConnector, 'refreshSubscription')
+      // @ts-expect-error -- this is a mock
       .mockResolvedValue(undefined);
     const [result] = setup(data);
 

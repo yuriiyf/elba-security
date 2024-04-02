@@ -26,6 +26,7 @@ const data = {
   organisationId: organisation.id,
   skipToken: startSkipToken,
   syncStartedAt: '2024-03-13T11:29:15.185Z',
+  isFirstSync: true,
 };
 
 const validTeams: MicrosoftTeam[] = [

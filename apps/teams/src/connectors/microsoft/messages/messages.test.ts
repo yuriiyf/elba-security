@@ -92,7 +92,7 @@ const validMessages = createValidMessagesArray();
 
 const messages = [...validMessages, ...invalidMessages];
 
-const message: MicrosoftMessage = {
+const message: Omit<MicrosoftMessage, 'replies@odata.nextLink' | 'replies'> = {
   id: 'some-id',
   webUrl: 'http://wb.uk.com',
   etag: `122123213`,
@@ -109,27 +109,6 @@ const message: MicrosoftMessage = {
   body: {
     content: 'content',
   },
-  'replies@odata.nextLink': `https://graph.microsoft-api-test-url.com/v1.0/teams('team-id')/channels('channel-id')/messages('message-id')/replies?$skipToken=${repliesSkipToken}`,
-  replies: [
-    {
-      id: `reply-id`,
-      webUrl: `http://wb.uk.com`,
-      etag: `122123213`,
-      createdDateTime: '2023-03-28T21:11:12.395Z',
-      lastEditedDateTime: '2024-02-28T21:11:12.395Z',
-      messageType: 'message',
-      body: {
-        content: `content`,
-      },
-      from: {
-        user: {
-          id: `user-id`,
-        },
-        application: null,
-      },
-      type: 'reply',
-    },
-  ],
 };
 
 describe('messages connector', () => {

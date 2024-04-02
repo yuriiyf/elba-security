@@ -75,9 +75,10 @@ describe('sync-channels', () => {
 
     const channelsToInsert = validChannels.map((channel) => ({
       organisationId: organisation.id,
-      id: channel.id,
+      id: `${organisation.id}:${channel.id}`,
       membershipType: channel.membershipType,
       displayName: channel.displayName,
+      channelId: channel.id,
     }));
 
     await db.insert(channelsTable).values(channelsToInsert);

@@ -51,10 +51,11 @@ describe('channel-created', () => {
   test('should not insert the channel when the channel is exist', async () => {
     await db.insert(organisationsTable).values(organisation);
     await db.insert(channelsTable).values({
-      id: 'exist-channel-id',
+      id: `${organisation.id}:exist-channel-id`,
+      channelId: 'exist-channel-id',
+      organisationId: organisation.id,
       membershipType: 'standard',
       displayName: 'exist-channel',
-      organisationId: organisation.id,
     });
 
     const [result] = setup({
@@ -71,8 +72,8 @@ describe('channel-created', () => {
       db
         .select({ id: channelsTable.id })
         .from(channelsTable)
-        .where(eq(channelsTable.id, 'exist-channel-id'))
-    ).resolves.toMatchObject([{ id: 'exist-channel-id' }]);
+        .where(eq(channelsTable.id, `${organisation.id}:exist-channel-id`))
+    ).resolves.toMatchObject([{ id: `${organisation.id}:exist-channel-id` }]);
 
     await expect(result).resolves.toStrictEqual({
       message: 'channel already exists',
@@ -139,6 +140,7 @@ describe('channel-created', () => {
     expect(send).toBeCalledWith({
       name: 'teams/channel.subscription.triggered',
       data: {
+        uniqueChannelInOrganisationId: `${organisation.id}:channel-id`,
         organisationId: organisation.id,
         channelId: 'channel-id',
         teamId: 'team-id',

@@ -1,5 +1,5 @@
 import { env } from '@/env';
-import { messageSchema } from '@/connectors/microsoft/schemes';
+import { commonMessageSchema, messageSchema } from '@/connectors/microsoft/schemes';
 import type { MicrosoftMessage, MicrosoftReply } from '@/connectors/microsoft/types';
 import { MicrosoftError } from '../commons/error';
 import {
@@ -83,7 +83,7 @@ export const getMessage = async ({ token, teamId, channelId, messageId }: GetMes
 
   const data = (await response.json()) as object;
 
-  const result = messageSchema.safeParse({
+  const result = commonMessageSchema.safeParse({
     ...data,
     type: 'message',
   });

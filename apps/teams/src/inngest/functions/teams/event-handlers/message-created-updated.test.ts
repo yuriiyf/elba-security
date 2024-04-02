@@ -27,7 +27,8 @@ const organisation = {
 };
 
 const channel = {
-  id: 'channel-id',
+  id: `${organisation.id}:channel-id`,
+  channelId: 'channel-id',
   membershipType: 'standard',
   displayName: 'channel-name',
   organisationId: organisation.id,
@@ -99,7 +100,7 @@ const invalidMessage: MicrosoftMessage = {
 };
 
 const formatObject = {
-  id: 'message-id',
+  id: `${organisation.id}:message-id`,
   name: '#channel-name - 2023-03-28',
   metadata: {
     teamId: 'team-id',
@@ -163,7 +164,7 @@ describe('message-created-updated', () => {
       db
         .select({ id: channelsTable.id })
         .from(channelsTable)
-        .where(eq(channelsTable.id, 'channel-id'))
+        .where(eq(channelsTable.id, `${organisation.id}:channel-id`))
     ).resolves.toMatchObject([]);
 
     await expect(result).rejects.toBeInstanceOf(NonRetriableError);
@@ -231,7 +232,7 @@ describe('message-created-updated', () => {
                 'message-id'
                 )`,
       })
-      .where(eq(channelsTable.id, 'channel-id'));
+      .where(eq(channelsTable.id, `${organisation.id}:channel-id`));
 
     const elbaInstance = elba.mock.results.at(0)?.value;
 

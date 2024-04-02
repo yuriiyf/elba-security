@@ -26,7 +26,8 @@ const organisation = {
 };
 
 const channel = {
-  id: 'channel-id',
+  id: `${organisation.id}:channel-id`,
+  channelId: 'channel-id',
   membershipType: 'standard',
   displayName: 'channel-name',
   organisationId: organisation.id,
@@ -75,7 +76,7 @@ const invalidReply: MicrosoftReply = {
 };
 
 const formatObject = {
-  id: 'reply-id',
+  id: `${organisation.id}:reply-id`,
   name: '#channel-name - 2023-03-28',
   metadata: {
     teamId: 'team-id',
@@ -142,7 +143,7 @@ describe('reply-created-updated', () => {
       db
         .select({ id: channelsTable.id })
         .from(channelsTable)
-        .where(eq(channelsTable.id, 'channel-id'))
+        .where(eq(channelsTable.id, `${organisation.id}:channel-id`))
     ).resolves.toMatchObject([]);
 
     await expect(result).rejects.toBeInstanceOf(NonRetriableError);

@@ -30,7 +30,7 @@ export const channelDeletedHandler: TeamsEventHandler = async ({
       messages: channelsTable.messages,
     })
     .from(channelsTable)
-    .where(eq(channelsTable.id, channelId));
+    .where(eq(channelsTable.id, `${organisation.id}:${channelId}`));
 
   if (!channel) {
     throw new NonRetriableError(`Could not retrieve channel with channelId=${channelId}`);
@@ -38,7 +38,7 @@ export const channelDeletedHandler: TeamsEventHandler = async ({
 
   await db.delete(subscriptionsTable).where(eq(subscriptionsTable.id, subscriptionId));
 
-  await db.delete(channelsTable).where(eq(channelsTable.id, channelId));
+  await db.delete(channelsTable).where(eq(channelsTable.id, `${organisation.id}:${channelId}`));
 
   await deleteSubscription(organisation.token, subscriptionId);
 

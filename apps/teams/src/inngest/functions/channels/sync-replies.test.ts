@@ -80,7 +80,7 @@ const invalidReplies = [
 const objects = {
   objects: [
     {
-      id: 'reply-id-0',
+      id: `${data.organisationId}:reply-id-0`,
       name: `#channel-name - ${convertISOToDate('2023-03-28T21:11:12.395Z')}`,
       metadata: {
         teamId: data.teamId,
@@ -107,7 +107,7 @@ const objects = {
       contentHash: '122123213',
     },
     {
-      id: 'reply-id-1',
+      id: `${data.organisationId}:reply-id-1`,
       name: `#channel-name - ${convertISOToDate('2023-03-28T21:11:12.395Z')}`,
       metadata: {
         teamId: data.teamId,
@@ -192,7 +192,7 @@ describe('sync-channels', () => {
                 ${`{${repliesIds.join(', ')}}`}
                 )`,
       })
-      .where(eq(channelsTable.id, data.channelId));
+      .where(eq(channelsTable.id, `${data.organisationId}:${data.channelId}`));
 
     expect(step.sendEvent).toBeCalledTimes(1);
     expect(step.sendEvent).toBeCalledWith('sync-next-replies-page', {

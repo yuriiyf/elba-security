@@ -111,7 +111,7 @@ export const syncReplies = inngest.createFunction(
                 ${`{${repliesIds.join(', ')}}`}
                 )`,
           })
-          .where(eq(channelsTable.id, channelId));
+          .where(eq(channelsTable.id, `${organisationId}:${channelId}`));
       }
     });
 
@@ -128,6 +128,7 @@ export const syncReplies = inngest.createFunction(
         status: 'ongoing',
       };
     }
+
     await step.sendEvent('replies-sync-complete', {
       name: 'teams/replies.sync.completed',
       data: {

@@ -39,10 +39,12 @@ export const replyCreatedOrUpdatedHandler: TeamsEventHandler = async ({
       membershipType: channelsTable.membershipType,
     })
     .from(channelsTable)
-    .where(eq(channelsTable.id, channelId));
+    .where(eq(channelsTable.id, `${organisation.id}:${channelId}`));
 
   if (!channel) {
-    throw new NonRetriableError(`Could not retrieve channel with channelId=${channelId}`);
+    throw new NonRetriableError(
+      `Could not retrieve channel with channelId=${organisation.id}:${channelId}`
+    );
   }
 
   const reply = await getReply({
@@ -65,7 +67,7 @@ export const replyCreatedOrUpdatedHandler: TeamsEventHandler = async ({
                 ${reply.id}
                 )`,
     })
-    .where(eq(channelsTable.id, channelId));
+    .where(eq(channelsTable.id, `${organisation.id}:${channelId}`));
 
   const elbaClient = createElbaClient(organisation.id, organisation.region);
 

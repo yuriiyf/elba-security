@@ -27,7 +27,7 @@ export const formatDataProtectionObject = ({
   const creationDate = convertISOToDate(message.createdDateTime);
 
   return {
-    id: message.id,
+    id: `${organisationId}:${message.id}`,
     name: `#${channelName} - ${creationDate}`,
     metadata: {
       teamId,

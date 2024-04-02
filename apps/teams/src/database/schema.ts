@@ -10,6 +10,7 @@ export const organisationsTable = pgTable('organisations', {
 
 export const channelsTable = pgTable('channels', {
   id: text('id').primaryKey(),
+  channelId: text('channel_id').notNull(),
   organisationId: uuid('organisation_id')
     .references(() => organisationsTable.id)
     .notNull(),

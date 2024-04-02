@@ -100,7 +100,7 @@ const invalidMessages = [
 const objects = {
   objects: [
     {
-      id: 'message-id-0',
+      id: `${data.organisationId}:message-id-0`,
       name: `#channel-name - ${convertISOToDate('2023-03-28T21:11:12.395Z')}`,
       metadata: {
         teamId: data.teamId,
@@ -127,11 +127,11 @@ const objects = {
       contentHash: '122123213',
     },
     {
-      id: 'reply-id-0',
+      id: `${data.organisationId}:reply-id-0`,
       name: '#channel-name - 2023-03-28',
       metadata: {
         teamId: 'team-id-123',
-        organisationId: '973b95c5-5dc2-44e8-8ed6-a4ff91a7cf8d',
+        organisationId: data.organisationId,
         channelId: 'channel-id-234',
         messageId: 'message-id-0',
         type: 'reply',
@@ -154,7 +154,7 @@ const objects = {
       contentHash: '122123213',
     },
     {
-      id: 'message-id-1',
+      id: `${data.organisationId}:message-id-1`,
       name: `#channel-name - ${convertISOToDate('2023-03-28T21:11:12.395Z')}`,
       metadata: {
         teamId: data.teamId,
@@ -182,11 +182,11 @@ const objects = {
     },
 
     {
-      id: 'reply-id-1',
+      id: `${data.organisationId}:reply-id-1`,
       name: '#channel-name - 2023-03-28',
       metadata: {
         teamId: 'team-id-123',
-        organisationId: '973b95c5-5dc2-44e8-8ed6-a4ff91a7cf8d',
+        organisationId: data.organisationId,
         channelId: 'channel-id-234',
         messageId: 'message-id-1',
         type: 'reply',
@@ -265,10 +265,11 @@ describe('sync-messages', () => {
   test('should continue the sync when there is a next page', async () => {
     await db.insert(organisationsTable).values(organisation);
     await db.insert(channelsTable).values({
-      id: data.channelId,
+      id: `${organisation.id}:${data.channelId}`,
       membershipType: 'standard',
       displayName: 'channel',
       organisationId: organisation.id,
+      channelId: data.channelId,
     });
 
     const elba = spyOnElba();
@@ -307,7 +308,7 @@ describe('sync-messages', () => {
                 ${`{${messagesIds.join(', ')}}`}
                 )`,
       })
-      .where(eq(channelsTable.id, data.channelId));
+      .where(eq(channelsTable.id, `${organisation.id}:${data.channelId}`));
 
     expect(step.waitForEvent).toBeCalledTimes(2);
     expect(step.waitForEvent).toBeCalledWith('wait-for-replies-complete-message-id-0', {
@@ -333,10 +334,11 @@ describe('sync-messages', () => {
   test('should finalize the sync when there is no next page', async () => {
     await db.insert(organisationsTable).values(organisation);
     await db.insert(channelsTable).values({
-      id: data.channelId,
+      id: `${organisation.id}:${data.channelId}`,
       membershipType: 'standard',
       displayName: 'channel',
       organisationId: organisation.id,
+      channelId: data.channelId,
     });
 
     const elba = spyOnElba();
@@ -362,7 +364,7 @@ describe('sync-messages', () => {
                 ${`{${messagesIds.join(', ')}}`}
                 )`,
       })
-      .where(eq(channelsTable.id, data.channelId));
+      .where(eq(channelsTable.id, `${organisation.id}:${data.channelId}`));
 
     expect(elbaInstance?.dataProtection.updateObjects).toBeCalledTimes(1);
     expect(elbaInstance?.dataProtection.updateObjects).toBeCalledWith(objects);

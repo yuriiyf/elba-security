@@ -9,7 +9,7 @@ import { createSubscription } from '@/connectors/microsoft/subscriptions/subscri
 export const subscribeToChannelMessage = inngest.createFunction(
   {
     id: 'subscribe-to-channel',
-    concurrency: { key: 'event.data.channelId', limit: 1 },
+    concurrency: { key: 'event.data.uniqueChannelInOrganisationId', limit: 1 },
     cancelOn: [
       {
         event: 'teams/teams.elba_app.installed',
