@@ -4,36 +4,50 @@ import { organisationsTable } from '@/database/schema';
 import { getReply } from '@/connectors/microsoft/replies/replies';
 import { decrypt } from '@/common/crypto';
 import { getMessage } from '@/connectors/microsoft/messages/messages';
-import type { ElbaPayload } from '@/app/api/webhooks/elba/data-protection/types';
+import { messageMetadataSchema } from '@/connectors/elba/data-protection/metadata';
 
-export const fetchDataProtectionContent = async (data: ElbaPayload) => {
+export const fetchDataProtectionContent = async ({
+  organisationId,
+  metadata,
+}: {
+  organisationId: string;
+  metadata: any; // eslint-disable-line -- metadata type is any
+}) => {
+  const messageMetadataResult = messageMetadataSchema.safeParse(metadata);
+
+  if (!messageMetadataResult.success) {
+    throw new Error('Invalid message metadata');
+  }
+
+  const { teamId, channelId, messageId, replyId } = messageMetadataResult.data;
+
   const [organisation] = await db
     .select({
       token: organisationsTable.token,
     })
     .from(organisationsTable)
-    .where(eq(organisationsTable.id, data.organisationId));
+    .where(eq(organisationsTable.id, organisationId));
 
   if (!organisation) {
-    throw new Error(`Could not retrieve organisation with organisationId=${data.organisationId}`);
+    throw new Error(`Could not retrieve organisation with organisationId=${organisationId}`);
   }
 
-  if (data.metadata.type === 'message') {
+  if (messageMetadataResult.data.type === 'message') {
     return getMessage({
       token: await decrypt(organisation.token),
-      teamId: data.metadata.teamId,
-      channelId: data.metadata.channelId,
-      messageId: data.metadata.messageId,
+      teamId,
+      channelId,
+      messageId,
     });
   }
 
-  if (data.metadata.replyId) {
+  if (replyId) {
     return getReply({
       token: await decrypt(organisation.token),
-      teamId: data.metadata.teamId,
-      channelId: data.metadata.channelId,
-      messageId: data.metadata.messageId,
-      replyId: data.metadata.replyId,
+      teamId,
+      channelId,
+      messageId,
+      replyId,
     });
   }
 };

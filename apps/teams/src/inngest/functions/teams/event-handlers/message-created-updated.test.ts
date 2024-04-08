@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from 'vitest';
 import { NonRetriableError } from 'inngest';
 import { createInngestFunctionMock, spyOnElba } from '@elba-security/test-utils';
-import { eq, sql } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { handleTeamsWebhookEvent } from '@/inngest/functions/teams/handle-team-webhook-event';
 import { EventType } from '@/app/api/webhooks/microsoft/event-handler/service';
 import { db } from '@/database/client';
@@ -223,16 +223,6 @@ describe('message-created-updated', () => {
       messageId: 'message-id',
     });
     expect(getMessage).toBeCalledTimes(1);
-
-    await db
-      .update(channelsTable)
-      .set({
-        messages: sql`array_append(
-                ${channelsTable.messages},
-                'message-id'
-                )`,
-      })
-      .where(eq(channelsTable.id, `${organisation.id}:channel-id`));
 
     const elbaInstance = elba.mock.results.at(0)?.value;
 

@@ -1,7 +1,6 @@
 import { createInngestFunctionMock, spyOnElba } from '@elba-security/test-utils';
 import { afterAll, afterEach, describe, expect, test, vi } from 'vitest';
 import { NonRetriableError } from 'inngest';
-import { eq, sql } from 'drizzle-orm';
 import * as messageConnector from '@/connectors/microsoft/messages/messages';
 import { db } from '@/database/client';
 import { channelsTable, organisationsTable } from '@/database/schema';
@@ -298,18 +297,6 @@ describe('sync-messages', () => {
       channelId: data.channelId,
     });
 
-    const messagesIds = validMessages.map((message) => message.id);
-
-    await db
-      .update(channelsTable)
-      .set({
-        messages: sql`array_cat(
-                ${channelsTable.messages},
-                ${`{${messagesIds.join(', ')}}`}
-                )`,
-      })
-      .where(eq(channelsTable.id, `${organisation.id}:${data.channelId}`));
-
     expect(step.waitForEvent).toBeCalledTimes(2);
     expect(step.waitForEvent).toBeCalledWith('wait-for-replies-complete-message-id-0', {
       event: 'teams/replies.sync.completed',
@@ -353,18 +340,6 @@ describe('sync-messages', () => {
     await expect(result).resolves.toStrictEqual({ status: 'completed' });
 
     const elbaInstance = elba.mock.results.at(0)?.value;
-
-    const messagesIds = validMessages.map((message) => message.id);
-
-    await db
-      .update(channelsTable)
-      .set({
-        messages: sql`array_cat(
-                ${channelsTable.messages},
-                ${`{${messagesIds.join(', ')}}`}
-                )`,
-      })
-      .where(eq(channelsTable.id, `${organisation.id}:${data.channelId}`));
 
     expect(elbaInstance?.dataProtection.updateObjects).toBeCalledTimes(1);
     expect(elbaInstance?.dataProtection.updateObjects).toBeCalledWith(objects);

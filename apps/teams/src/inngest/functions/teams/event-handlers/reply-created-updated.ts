@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { NonRetriableError } from 'inngest';
 import type { TeamsEventHandler } from '@/inngest/functions/teams/event-handlers/index';
 import { db } from '@/database/client';
@@ -58,16 +58,6 @@ export const replyCreatedOrUpdatedHandler: TeamsEventHandler = async ({
   if (!reply || reply.messageType !== 'message') {
     return;
   }
-
-  await db
-    .update(channelsTable)
-    .set({
-      messages: sql`array_append(
-                ${channelsTable.messages},
-                ${reply.id}
-                )`,
-    })
-    .where(eq(channelsTable.id, `${organisation.id}:${channelId}`));
 
   const elbaClient = createElbaClient(organisation.id, organisation.region);
 

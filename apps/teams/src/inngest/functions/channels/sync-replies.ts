@@ -1,8 +1,7 @@
-import { eq, sql } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { NonRetriableError } from 'inngest';
-import { logger } from '@elba-security/logger';
 import { db } from '@/database/client';
-import { channelsTable, organisationsTable } from '@/database/schema';
+import { organisationsTable } from '@/database/schema';
 import { env } from '@/env';
 import { inngest } from '@/inngest/client';
 import { decrypt } from '@/common/crypto';
@@ -37,7 +36,7 @@ export const syncReplies = inngest.createFunction(
     retries: env.REPLIES_SYNC_MAX_RETRY,
   },
   { event: 'teams/replies.sync.triggered' },
-  async ({ event, step }) => {
+  async ({ event, step, logger }) => {
     const { organisationId, teamId, skipToken, channelId, messageId, membershipType, channelName } =
       event.data;
 
@@ -73,7 +72,7 @@ export const syncReplies = inngest.createFunction(
 
       const filterReplies = replies.validReplies.filter((reply) => reply.messageType === 'message');
 
-      return { ...replies, validReplies: filterReplies };
+      return { nextSkipToken: replies.nextSkipToken, validReplies: filterReplies };
     });
 
     await step.run('elba-data-sync', async () => {
@@ -97,22 +96,6 @@ export const syncReplies = inngest.createFunction(
       });
 
       await elbaClient.dataProtection.updateObjects({ objects });
-    });
-
-    await step.run('add-replies-to-db', async () => {
-      if (validReplies.length) {
-        const repliesIds = validReplies.map((reply) => reply.id);
-
-        await db
-          .update(channelsTable)
-          .set({
-            messages: sql`array_cat(
-                ${channelsTable.messages},
-                ${`{${repliesIds.join(', ')}}`}
-                )`,
-          })
-          .where(eq(channelsTable.id, `${organisationId}:${channelId}`));
-      }
     });
 
     if (nextSkipToken) {

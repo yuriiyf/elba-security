@@ -1,18 +1,21 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { parseWebhookEventData } from '@elba-security/sdk';
 import { deleteDataProtectionObject } from '@/app/api/webhooks/elba/data-protection/delete-object/service';
-import { elbaPayloadSchema } from '@/app/api/webhooks/elba/data-protection/schemes';
 
 export const POST = async (request: NextRequest) => {
-  const data = (await request.json()) as object;
+  const data: unknown = await request.json();
 
-  const result = elbaPayloadSchema.safeParse(data);
+  // eslint-disable-next-line -- metadata type is any
+  const { organisationId, metadata } = parseWebhookEventData(
+    'data_protection.object_deleted',
+    data
+  );
 
-  if (!result.success) {
-    return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
-  }
-
-  await deleteDataProtectionObject(result.data);
+  await deleteDataProtectionObject({
+    organisationId,
+    metadata, // eslint-disable-line -- metadata type is any,
+  });
 
   return new NextResponse();
 };

@@ -1,17 +1,21 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { elbaPayloadSchema } from '@/app/api/webhooks/elba/data-protection/schemes';
-import { refreshData } from '@/app/api/webhooks/elba/data-protection/refresh-object/service';
+import { parseWebhookEventData } from '@elba-security/sdk';
+import { refreshDataProtectionObject } from '@/app/api/webhooks/elba/data-protection/refresh-object/service';
 
 export const POST = async (request: NextRequest) => {
-  const data = (await request.json()) as object;
+  const data: unknown = await request.json();
 
-  const result = elbaPayloadSchema.safeParse(data);
+  // eslint-disable-next-line -- metadata type is any
+  const { organisationId, metadata } = parseWebhookEventData(
+    'data_protection.refresh_object_requested',
+    data
+  );
 
-  if (!result.success) {
-    return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
-  }
+  await refreshDataProtectionObject({
+    organisationId,
+    metadata, // eslint-disable-line -- metadata type is any,
+  });
 
-  await refreshData(result.data);
   return new NextResponse();
 };

@@ -1,18 +1,21 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { parseWebhookEventData } from '@elba-security/sdk';
 import { fetchDataProtectionContent } from '@/app/api/webhooks/elba/data-protection/fetch-content/service';
-import { elbaPayloadSchema } from '@/app/api/webhooks/elba/data-protection/schemes';
 
 export const POST = async (request: NextRequest) => {
-  const data = (await request.json()) as object;
+  const data: unknown = await request.json();
 
-  const result = elbaPayloadSchema.safeParse(data);
+  // eslint-disable-next-line -- metadata type is any
+  const { organisationId, metadata } = parseWebhookEventData(
+    'data_protection.content_requested',
+    data
+  );
 
-  if (!result.success) {
-    return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
-  }
-
-  const message = await fetchDataProtectionContent(result.data);
+  const message = await fetchDataProtectionContent({
+    organisationId,
+    metadata, // eslint-disable-line -- metadata type is any,
+  });
 
   if (!message) {
     return NextResponse.json({ error: 'Data protection object not received' }, { status: 400 });

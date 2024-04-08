@@ -1,6 +1,5 @@
 import { eq } from 'drizzle-orm';
 import { NonRetriableError } from 'inngest';
-import { logger } from '@elba-security/logger';
 import { db } from '@/database/client';
 import { organisationsTable } from '@/database/schema';
 import { env } from '@/env';
@@ -28,7 +27,7 @@ export const syncTeams = inngest.createFunction(
     retries: env.TEAMS_SYNC_MAX_RETRY,
   },
   { event: 'teams/teams.sync.triggered' },
-  async ({ event, step }) => {
+  async ({ event, step, logger }) => {
     const { organisationId, skipToken, syncStartedAt } = event.data;
 
     const [organisation] = await db

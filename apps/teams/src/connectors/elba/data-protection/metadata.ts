@@ -7,7 +7,7 @@ export const messageMetadataSchema = z.object({
   teamId: z.string().min(1),
   organisationId: z.string().min(1),
   replyId: z.string().optional(),
-  type: z.string(),
+  type: z.union([z.literal('message'), z.literal('reply')]),
 });
 
 export type MessageMetadata = zInfer<typeof messageMetadataSchema>;

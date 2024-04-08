@@ -14,9 +14,8 @@ export const channelsTable = pgTable('channels', {
   organisationId: uuid('organisation_id')
     .references(() => organisationsTable.id)
     .notNull(),
-  membershipType: text('membershipType').notNull(),
-  displayName: text('displayName').notNull(),
-  messages: text('messages').array(),
+  membershipType: text('membership_type').notNull(),
+  displayName: text('display_name').notNull(),
 });
 
 export const subscriptionsTable = pgTable('subscriptions', {

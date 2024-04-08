@@ -4,7 +4,7 @@ import type { TeamsEventHandler } from '@/inngest/functions/teams/event-handlers
 import { db } from '@/database/client';
 import { channelsTable, organisationsTable, subscriptionsTable } from '@/database/schema';
 import { deleteSubscription } from '@/connectors/microsoft/subscriptions/subscriptions';
-import { createElbaClient } from '@/connectors/elba/client';
+import { inngest } from '@/inngest/client';
 
 export const channelDeletedHandler: TeamsEventHandler = async ({
   channelId,
@@ -27,7 +27,6 @@ export const channelDeletedHandler: TeamsEventHandler = async ({
   const [channel] = await db
     .select({
       id: channelsTable.id,
-      messages: channelsTable.messages,
     })
     .from(channelsTable)
     .where(eq(channelsTable.id, `${organisation.id}:${channelId}`));
@@ -42,11 +41,15 @@ export const channelDeletedHandler: TeamsEventHandler = async ({
 
   await deleteSubscription(organisation.token, subscriptionId);
 
-  if (channel.messages?.length) {
-    const elbaClient = createElbaClient(organisation.id, organisation.region);
-
-    await elbaClient.dataProtection.deleteObjects({ ids: channel.messages });
-  }
+  await inngest.send({
+    name: 'teams/teams.sync.triggered',
+    data: {
+      organisationId: organisation.id,
+      syncStartedAt: new Date().toISOString(),
+      skipToken: null,
+      isFirstSync: true,
+    },
+  });
 
   return { message: 'channel was deleted' };
 };

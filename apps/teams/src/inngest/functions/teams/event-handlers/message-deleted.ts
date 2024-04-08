@@ -25,5 +25,5 @@ export const messageDeletedHandler: TeamsEventHandler = async ({ messageId, tena
 
   const elbaClient = createElbaClient(organisation.id, organisation.region);
 
-  await elbaClient.dataProtection.deleteObjects({ ids: [messageId] });
+  await elbaClient.dataProtection.deleteObjects({ ids: [`${organisation.id}:${messageId}`] });
 };

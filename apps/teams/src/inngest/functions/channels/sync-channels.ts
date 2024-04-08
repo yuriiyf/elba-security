@@ -1,6 +1,5 @@
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { NonRetriableError } from 'inngest';
-import { logger } from '@elba-security/logger';
 import { db } from '@/database/client';
 import { channelsTable, organisationsTable } from '@/database/schema';
 import { env } from '@/env';
@@ -35,7 +34,7 @@ export const syncChannels = inngest.createFunction(
     retries: env.CHANNELS_SYNC_MAX_RETRY,
   },
   { event: 'teams/channels.sync.triggered' },
-  async ({ event, step }) => {
+  async ({ event, step, logger }) => {
     const { organisationId, teamId } = event.data;
 
     const [organisation] = await db
@@ -77,7 +76,15 @@ export const syncChannels = inngest.createFunction(
         channelId: channel.id,
       }));
 
-      await db.insert(channelsTable).values(channelsToInsert).onConflictDoNothing();
+      await db
+        .insert(channelsTable)
+        .values(channelsToInsert)
+        .onConflictDoUpdate({
+          target: [channelsTable.id],
+          set: {
+            displayName: sql`excluded.display_name`,
+          },
+        });
     });
 
     if (channels.length) {

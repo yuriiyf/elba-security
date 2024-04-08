@@ -1,8 +1,7 @@
-import { eq, sql } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { NonRetriableError } from 'inngest';
-import { logger } from '@elba-security/logger';
 import { db } from '@/database/client';
-import { channelsTable, organisationsTable } from '@/database/schema';
+import { organisationsTable } from '@/database/schema';
 import { env } from '@/env';
 import { inngest } from '@/inngest/client';
 import { decrypt } from '@/common/crypto';
@@ -38,7 +37,7 @@ export const syncMessages = inngest.createFunction(
     retries: env.MESSAGES_SYNC_MAX_RETRY,
   },
   { event: 'teams/messages.sync.triggered' },
-  async ({ event, step }) => {
+  async ({ event, step, logger }) => {
     const { organisationId, teamId, skipToken, channelId, channelName, membershipType } =
       event.data;
 
@@ -112,23 +111,7 @@ export const syncMessages = inngest.createFunction(
         'replies@odata.nextLink': message['replies@odata.nextLink'],
       }));
 
-      return { ...messages, validMessages: selectedMessagesFields };
-    });
-
-    await step.run('add-messages-to-db', async () => {
-      if (validMessages.length) {
-        const messagesIds = validMessages.map((message) => message.id);
-
-        await db
-          .update(channelsTable)
-          .set({
-            messages: sql`array_cat(
-                ${channelsTable.messages},
-                ${`{${messagesIds.join(', ')}}`}
-                )`,
-          })
-          .where(eq(channelsTable.id, `${organisationId}:${channelId}`));
-      }
+      return { nextSkipToken: messages.nextSkipToken, validMessages: selectedMessagesFields };
     });
 
     if (validMessages.length) {
@@ -182,6 +165,7 @@ export const syncMessages = inngest.createFunction(
         status: 'ongoing',
       };
     }
+
     await step.sendEvent('messages-sync-complete', {
       name: 'teams/messages.sync.completed',
       data: {

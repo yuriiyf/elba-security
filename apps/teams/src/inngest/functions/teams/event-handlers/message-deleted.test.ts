@@ -73,6 +73,8 @@ describe('message-deleted', () => {
     expect(elba).toBeCalledTimes(1);
 
     expect(elbaInstance?.dataProtection.deleteObjects).toBeCalledTimes(1);
-    expect(elbaInstance?.dataProtection.deleteObjects).toBeCalledWith({ ids: ['message-id'] });
+    expect(elbaInstance?.dataProtection.deleteObjects).toBeCalledWith({
+      ids: [`${organisation.id}:message-id`],
+    });
   });
 });

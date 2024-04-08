@@ -7,6 +7,7 @@ import { channelsTable, organisationsTable } from '@/database/schema';
 import { encrypt } from '@/common/crypto';
 import { syncChannels } from '@/inngest/functions/channels/sync-channels';
 import type { MicrosoftChannel } from '@/connectors/microsoft/channels/channels';
+import { sql } from 'drizzle-orm';
 
 const token = 'token';
 const encryptedToken = await encrypt(token);
@@ -81,7 +82,15 @@ describe('sync-channels', () => {
       channelId: channel.id,
     }));
 
-    await db.insert(channelsTable).values(channelsToInsert);
+    await db
+      .insert(channelsTable)
+      .values(channelsToInsert)
+      .onConflictDoUpdate({
+        target: [channelsTable.id],
+        set: {
+          displayName: sql`excluded.display_name`,
+        },
+      });
 
     const [result, { step }] = setup(data);
 

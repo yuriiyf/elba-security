@@ -1,10 +1,9 @@
 import { createInngestFunctionMock, spyOnElba } from '@elba-security/test-utils';
 import { describe, expect, test, vi } from 'vitest';
 import { NonRetriableError } from 'inngest';
-import { eq, sql } from 'drizzle-orm';
 import * as replyConnector from '@/connectors/microsoft/replies/replies';
 import { db } from '@/database/client';
-import { channelsTable, organisationsTable } from '@/database/schema';
+import { organisationsTable } from '@/database/schema';
 import { encrypt } from '@/common/crypto';
 import { syncReplies } from '@/inngest/functions/channels/sync-replies';
 import type { MicrosoftReply } from '@/connectors/microsoft/types';
@@ -181,18 +180,6 @@ describe('sync-channels', () => {
       channelId: data.channelId,
       messageId: data.messageId,
     });
-
-    const repliesIds = validReplies.map((reply) => reply.id);
-
-    await db
-      .update(channelsTable)
-      .set({
-        messages: sql`array_cat(
-                ${channelsTable.messages},
-                ${`{${repliesIds.join(', ')}}`}
-                )`,
-      })
-      .where(eq(channelsTable.id, `${data.organisationId}:${data.channelId}`));
 
     expect(step.sendEvent).toBeCalledTimes(1);
     expect(step.sendEvent).toBeCalledWith('sync-next-replies-page', {

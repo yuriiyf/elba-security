@@ -1,14 +1,24 @@
 import { inngest } from '@/inngest/client';
-import type { ElbaPayload } from '@/app/api/webhooks/elba/data-protection/types';
+import { messageMetadataSchema } from '@/connectors/elba/data-protection/metadata';
 
-export const refreshData = async (data: ElbaPayload) => {
+export const refreshDataProtectionObject = async ({
+  organisationId,
+  metadata,
+}: {
+  organisationId: string;
+  metadata: any; // eslint-disable-line -- metadata type is any
+}) => {
+  const messageMetadataResult = messageMetadataSchema.safeParse(metadata);
+
+  if (!messageMetadataResult.success) {
+    throw new Error('Invalid message metadata');
+  }
+
   await inngest.send({
-    name: 'teams/teams.sync.triggered',
+    name: 'teams/data.protection.refresh.triggered',
     data: {
-      organisationId: data.organisationId,
-      syncStartedAt: new Date().toISOString(),
-      skipToken: null,
-      isFirstSync: true,
+      organisationId,
+      metadata: messageMetadataResult.data,
     },
   });
 };

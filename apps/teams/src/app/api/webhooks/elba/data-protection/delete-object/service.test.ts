@@ -1,11 +1,11 @@
 import { describe, expect, test, vi } from 'vitest';
 import { decrypt, encrypt } from '@/common/crypto';
 import { deleteDataProtectionObject } from '@/app/api/webhooks/elba/data-protection/delete-object/service';
-import type { ElbaPayload } from '@/app/api/webhooks/elba/data-protection/types';
 import { db } from '@/database/client';
 import { organisationsTable } from '@/database/schema';
 import * as messageConnector from '@/connectors/microsoft/messages/messages';
 import * as replyConnector from '@/connectors/microsoft/replies/replies';
+import type { MessageMetadata } from '@/connectors/elba/data-protection/metadata';
 
 const token = 'token';
 const encryptedToken = await encrypt(token);
@@ -17,34 +17,28 @@ const organisation = {
   token: encryptedToken,
 };
 
-const messageData: ElbaPayload = {
-  id: 'message-id',
-  metadata: {
-    teamId: 'team-id',
-    organisationId: organisation.id,
-    channelId: 'channel-id',
-    messageId: 'message-id',
-    replyId: undefined,
-    type: 'message',
-  },
+const messageMetadata: MessageMetadata = {
+  teamId: 'team-id',
   organisationId: organisation.id,
+  channelId: 'channel-id',
+  messageId: 'message-id',
+  replyId: undefined,
+  type: 'message',
 };
 
-const replyData: ElbaPayload = {
-  id: 'reply-id',
-  metadata: {
-    teamId: 'team-id',
-    organisationId: organisation.id,
-    channelId: 'channel-id',
-    messageId: 'message-id',
-    replyId: 'reply-id',
-    type: 'reply',
-  },
+const replyMetadata: MessageMetadata = {
+  teamId: 'team-id',
   organisationId: organisation.id,
+  channelId: 'channel-id',
+  messageId: 'message-id',
+  replyId: 'reply-id',
+  type: 'reply',
 };
 describe('deleteDataProtectionObject', () => {
   test('should throw if the organization not received', async () => {
-    await expect(deleteDataProtectionObject(messageData)).rejects.toThrowError();
+    await expect(
+      deleteDataProtectionObject({ organisationId: organisation.id, metadata: messageMetadata })
+    ).rejects.toThrowError();
   });
 
   test('should delete message object', async () => {
@@ -54,13 +48,15 @@ describe('deleteDataProtectionObject', () => {
       .spyOn(messageConnector, 'deleteMessage')
       .mockResolvedValue({ message: 'message was deleted' });
 
-    await expect(deleteDataProtectionObject(messageData)).resolves.toBeUndefined();
+    await expect(
+      deleteDataProtectionObject({ organisationId: organisation.id, metadata: messageMetadata })
+    ).resolves.toBeUndefined();
 
     expect(deleteMessage).toBeCalledWith({
       token: await decrypt(organisation.token),
-      teamId: messageData.metadata.organisationId,
-      channelId: messageData.metadata.channelId,
-      messageId: messageData.metadata.messageId,
+      teamId: messageMetadata.teamId,
+      channelId: messageMetadata.channelId,
+      messageId: messageMetadata.messageId,
     });
     expect(deleteMessage).toBeCalledTimes(1);
   });
@@ -72,14 +68,16 @@ describe('deleteDataProtectionObject', () => {
       .spyOn(replyConnector, 'deleteReply')
       .mockResolvedValue({ message: 'reply was deleted' });
 
-    await expect(deleteDataProtectionObject(replyData)).resolves.toBeUndefined();
+    await expect(
+      deleteDataProtectionObject({ organisationId: organisation.id, metadata: replyMetadata })
+    ).resolves.toBeUndefined();
 
     expect(deleteReply).toBeCalledWith({
       token: await decrypt(organisation.token),
-      teamId: replyData.metadata.organisationId,
-      channelId: replyData.metadata.channelId,
-      messageId: replyData.metadata.messageId,
-      replyId: replyData.metadata.replyId,
+      teamId: replyMetadata.teamId,
+      channelId: replyMetadata.channelId,
+      messageId: replyMetadata.messageId,
+      replyId: replyMetadata.replyId,
     });
     expect(deleteReply).toBeCalledTimes(1);
   });
