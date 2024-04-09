@@ -1,15 +1,20 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { handleSubscriptionEvent } from '@/app/api/webhooks/microsoft/lifecycle-notifications/service';
-import type { MicrosoftSubscriptionEvent } from '@/app/api/webhooks/microsoft/lifecycle-notifications/types';
-import type { WebhookResponse } from '@/app/api/webhooks/microsoft/event-handler/types';
+import { handleSubscriptionEvent } from '@/app/api/webhook/microsoft/lifecycle-notifications/service';
+import type { MicrosoftSubscriptionEvent } from '@/app/api/webhook/microsoft/lifecycle-notifications/types';
+import type { WebhookResponse } from '@/app/api/webhook/microsoft/event-handler/types';
+import { env } from '@/env';
+
+export const preferredRegion = env.VERCEL_PREFERRED_REGION;
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 export const lifecycleEventSchema = z.object({
   subscriptionId: z.string(),
   lifecycleEvent: z.enum(['reauthorizationRequired', 'subscriptionRemoved']),
   resource: z.string(),
-  organizationId: z.string(),
+  organisationId: z.string(),
   subscriptionExpirationDateTime: z.string(),
 });
 

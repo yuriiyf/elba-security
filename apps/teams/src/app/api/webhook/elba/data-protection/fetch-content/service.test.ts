@@ -4,7 +4,7 @@ import { db } from '@/database/client';
 import { organisationsTable } from '@/database/schema';
 import * as messageConnector from '@/connectors/microsoft/messages/messages';
 import * as replyConnector from '@/connectors/microsoft/replies/replies';
-import { fetchDataProtectionContent } from '@/app/api/webhooks/elba/data-protection/fetch-content/service';
+import { fetchDataProtectionContent } from '@/app/api/webhook/elba/data-protection/fetch-content/service';
 import type { MicrosoftMessage, MicrosoftReply } from '@/connectors/microsoft/types';
 import type { MessageMetadata } from '@/connectors/elba/data-protection/metadata';
 

@@ -1,9 +1,7 @@
 import { describe, expect, test, vi } from 'vitest';
-import { handleSubscriptionEvent } from '@/app/api/webhooks/microsoft/lifecycle-notifications/service';
+import { handleSubscriptionEvent } from '@/app/api/webhook/microsoft/lifecycle-notifications/service';
 import { inngest } from '@/inngest/client';
-import type { MicrosoftSubscriptionEvent } from '@/app/api/webhooks/microsoft/lifecycle-notifications/types';
-
-const organisationId = '973b95c5-5dc2-44e8-8ed6-a4ff91a7cf8d';
+import type { MicrosoftSubscriptionEvent } from '@/app/api/webhook/microsoft/lifecycle-notifications/types';
 
 const data: MicrosoftSubscriptionEvent[] = [
   {
@@ -11,13 +9,13 @@ const data: MicrosoftSubscriptionEvent[] = [
     lifecycleEvent: 'reauthorizationRequired',
     resource: 'resource(/0)',
     subscriptionExpirationDateTime: '2024-03-13T08:36:42.751Z',
-    organizationId: organisationId,
+    organisationId: '973b95c5-5dc2-44e8-8ed6-a4ff91a7cf8d',
   },
   {
     subscriptionId: 'subscription-id-1',
     lifecycleEvent: 'subscriptionRemoved',
     resource: 'resource(/1)',
-    organizationId: organisationId,
+    organisationId: '973b95c5-5dc2-44e8-8ed6-a4ff91a7cf8d',
     subscriptionExpirationDateTime: '2024-03-13T08:16:42.751Z',
   },
 ];
@@ -30,12 +28,12 @@ describe('handleSubscribeEvent', () => {
     await expect(handleSubscriptionEvent(data)).resolves.toBeUndefined();
 
     expect(send).toBeCalledWith(
-      data.map((subscribe) => ({
-        id: `subscribe-event-${subscribe.subscriptionId}`,
+      data.map(({ subscriptionId, organisationId }) => ({
+        id: `subscribe-event-${subscriptionId}`,
         name: 'teams/subscription.refresh.triggered',
         data: {
-          organisationId: subscribe.organizationId,
-          subscriptionId: subscribe.subscriptionId,
+          organisationId,
+          subscriptionId,
         },
       }))
     );

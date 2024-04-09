@@ -10,8 +10,8 @@ import {
   refreshSubscription,
 } from '@/connectors/microsoft/subscriptions/subscriptions';
 import { encrypt } from '@/common/crypto';
-import { server } from '../../../../vitest/setup-msw-handlers';
 import { MicrosoftError } from '@/connectors/microsoft/commons/error';
+import { server } from '../../../../vitest/setup-msw-handlers';
 
 const validToken = 'token';
 const invalidDataToken = 'invalid-data-token';
@@ -49,9 +49,9 @@ describe('subscriptions connector', () => {
           if (
             body.changeType !== subscriptionChangeType ||
             body.resource !== subscriptionResource ||
-            body.notificationUrl !== `${env.WEBHOOK_URL}/api/webhooks/microsoft/event-handler` ||
+            body.notificationUrl !== `${env.WEBHOOK_URL}/api/webhook/microsoft/event-handler` ||
             body.lifecycleNotificationUrl !==
-              `${env.WEBHOOK_URL}/api/webhooks/microsoft/lifecycle-notifications`
+              `${env.WEBHOOK_URL}/api/webhook/microsoft/lifecycle-notifications`
           ) {
             return new Response(undefined, { status: 400 });
           }

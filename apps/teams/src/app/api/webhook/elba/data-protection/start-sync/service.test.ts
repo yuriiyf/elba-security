@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { inngest } from '@/inngest/client';
-import { startDataProtectionSync } from '@/app/api/webhooks/elba/data-protection/start-sync/service';
+import { startDataProtectionSync } from '@/app/api/webhook/elba/data-protection/start-sync/service';
 
 const organisationId = '98449620-9738-4a9c-8db0-1e4ef5a6a9e8';
 

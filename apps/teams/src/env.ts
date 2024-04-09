@@ -53,6 +53,7 @@ export const env = z
     WEBHOOK_URL: z.string().url(),
     SUBSCRIBE_EXPIRATION_DAYS: z.string(),
     REFRESH_DATA_PROTECTION_MAX_RETRY: zEnvRetry(),
+    DELETE_DATA_PROTECTION_MAX_RETRY: zEnvRetry(),
     TEAMS_SYNC_CRON: z.string(),
   })
   .parse(process.env);

@@ -1,11 +1,17 @@
+import { createInngestFunctionMock } from '@elba-security/test-utils';
 import { describe, expect, test, vi } from 'vitest';
-import { decrypt, encrypt } from '@/common/crypto';
-import { deleteDataProtectionObject } from '@/app/api/webhooks/elba/data-protection/delete-object/service';
+import { deleteDataProtection } from '@/inngest/functions/data-protections/delete-data-protection';
 import { db } from '@/database/client';
 import { organisationsTable } from '@/database/schema';
 import * as messageConnector from '@/connectors/microsoft/messages/messages';
+import { decrypt, encrypt } from '@/common/crypto';
 import * as replyConnector from '@/connectors/microsoft/replies/replies';
 import type { MessageMetadata } from '@/connectors/elba/data-protection/metadata';
+
+const setup = createInngestFunctionMock(
+  deleteDataProtection,
+  'teams/data.protection.delete.triggered'
+);
 
 const token = 'token';
 const encryptedToken = await encrypt(token);
@@ -34,11 +40,12 @@ const replyMetadata: MessageMetadata = {
   replyId: 'reply-id',
   type: 'reply',
 };
-describe('deleteDataProtectionObject', () => {
-  test('should throw if the organization not received', async () => {
-    await expect(
-      deleteDataProtectionObject({ organisationId: organisation.id, metadata: messageMetadata })
-    ).rejects.toThrowError();
+
+describe('deleteDataProtection', () => {
+  test('should throw if the organisation is not found', async () => {
+    // @ts-expect-error this is a mock
+    const [result] = setup(null);
+    await expect(result).rejects.toThrowError();
   });
 
   test('should delete message object', async () => {
@@ -48,9 +55,8 @@ describe('deleteDataProtectionObject', () => {
       .spyOn(messageConnector, 'deleteMessage')
       .mockResolvedValue({ message: 'message was deleted' });
 
-    await expect(
-      deleteDataProtectionObject({ organisationId: organisation.id, metadata: messageMetadata })
-    ).resolves.toBeUndefined();
+    const [result] = setup({ organisationId: organisation.id, metadata: messageMetadata });
+    await expect(result).resolves.toBeUndefined();
 
     expect(deleteMessage).toBeCalledWith({
       token: await decrypt(organisation.token),
@@ -68,9 +74,8 @@ describe('deleteDataProtectionObject', () => {
       .spyOn(replyConnector, 'deleteReply')
       .mockResolvedValue({ message: 'reply was deleted' });
 
-    await expect(
-      deleteDataProtectionObject({ organisationId: organisation.id, metadata: replyMetadata })
-    ).resolves.toBeUndefined();
+    const [result] = setup({ organisationId: organisation.id, metadata: replyMetadata });
+    await expect(result).resolves.toBeUndefined();
 
     expect(deleteReply).toBeCalledWith({
       token: await decrypt(organisation.token),

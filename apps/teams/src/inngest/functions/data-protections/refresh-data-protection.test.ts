@@ -132,7 +132,7 @@ describe('refreshDataProtection', () => {
     await expect(result).rejects.toThrowError();
   });
 
-  test('should delete the message from elba if the message was deleted in ms', async () => {
+  test('should delete the message from Elba if the message was deleted in ms', async () => {
     const elba = spyOnElba();
 
     await db.insert(organisationsTable).values(organisation);
@@ -159,6 +159,26 @@ describe('refreshDataProtection', () => {
     expect(elbaInstance?.dataProtection.deleteObjects).toBeCalledWith({
       ids: [`${organisation.id}:${messageMetadata.messageId}`],
     });
+  });
+
+  test('should update the message in Elba if the channel is not received', async () => {
+    await db.insert(organisationsTable).values(organisation);
+
+    const elba = spyOnElba();
+    const [result] = setup({ organisationId: organisation.id, metadata: messageMetadata });
+
+    const getMessage = vi.spyOn(messageConnector, 'getMessage').mockResolvedValue(message);
+    await expect(result).rejects.toThrowError();
+
+    expect(getMessage).toBeCalledWith({
+      token: await decrypt(organisation.token),
+      teamId: messageMetadata.teamId,
+      channelId: messageMetadata.channelId,
+      messageId: messageMetadata.messageId,
+    });
+    expect(getMessage).toBeCalledTimes(1);
+
+    expect(elba).toBeCalledTimes(1);
   });
 
   test('should update the message in elba client if the message received', async () => {
@@ -189,7 +209,7 @@ describe('refreshDataProtection', () => {
     });
   });
 
-  test('should delete the reply from elba if the reply was deleted in ms', async () => {
+  test('should delete the reply from Elba if the reply was deleted in ms', async () => {
     const elba = spyOnElba();
 
     await db.insert(organisationsTable).values(organisation);
@@ -219,7 +239,28 @@ describe('refreshDataProtection', () => {
     });
   });
 
-  test('should update the reply in elba client if the reply received', async () => {
+  test('should update the reply in Elba if the channel is not received', async () => {
+    await db.insert(organisationsTable).values(organisation);
+
+    const elba = spyOnElba();
+    const [result] = setup({ organisationId: organisation.id, metadata: replyMetadata });
+
+    const getReply = vi.spyOn(replyConnector, 'getReply').mockResolvedValue(reply);
+    await expect(result).rejects.toThrowError();
+
+    expect(getReply).toBeCalledWith({
+      token: await decrypt(organisation.token),
+      teamId: replyMetadata.teamId,
+      channelId: replyMetadata.channelId,
+      messageId: replyMetadata.messageId,
+      replyId: replyMetadata.replyId,
+    });
+    expect(getReply).toBeCalledTimes(1);
+
+    expect(elba).toBeCalledTimes(1);
+  });
+
+  test('should update the reply in Elba client if the reply received', async () => {
     await db.insert(organisationsTable).values(organisation);
     await db.insert(channelsTable).values(channel);
 

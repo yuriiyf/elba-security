@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { NonRetriableError } from 'inngest';
 import { createInngestFunctionMock, spyOnElba } from '@elba-security/test-utils';
-import { EventType } from '@/app/api/webhooks/microsoft/event-handler/service';
+import { EventType } from '@/app/api/webhook/microsoft/event-handler/service';
 import { handleTeamsWebhookEvent } from '@/inngest/functions/teams/handle-team-webhook-event';
 import { encrypt } from '@/common/crypto';
 import { db } from '@/database/client';

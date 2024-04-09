@@ -1,11 +1,16 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { handleWebhook } from '@/app/api/webhooks/microsoft/event-handler/service';
+import { handleWebhook } from '@/app/api/webhook/microsoft/event-handler/service';
 import type {
   SubscriptionPayload,
   WebhookResponse,
-} from '@/app/api/webhooks/microsoft/event-handler/types';
+} from '@/app/api/webhook/microsoft/event-handler/types';
+import { env } from '@/env';
+
+export const preferredRegion = env.VERCEL_PREFERRED_REGION;
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 export const subscriptionSchema = z.object({
   subscriptionId: z.string(),
