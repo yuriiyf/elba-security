@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call -- test conveniency */
-/* eslint-disable @typescript-eslint/no-unsafe-return -- test conveniency */
-
 import { http } from 'msw';
 import { describe, expect, test, beforeEach } from 'vitest';
 import { env } from '@/env';
@@ -111,11 +108,13 @@ describe('replies connector', () => {
             const nextPageUrl = new URL(url);
             nextPageUrl.searchParams.set('$skiptoken', nextSkipToken);
 
-            return Response.json({
-              '@odata.nextLink':
-                skipToken === endSkipToken ? null : decodeURIComponent(nextPageUrl.toString()),
-              value: replies.slice(0, top ? Number(top) : 0),
-            });
+            return new Response(
+              JSON.stringify({
+                '@odata.nextLink':
+                  skipToken === endSkipToken ? null : decodeURIComponent(nextPageUrl.toString()),
+                value: replies.slice(0, top ? Number(top) : 0),
+              })
+            );
           }
         )
       );
@@ -197,7 +196,7 @@ describe('replies connector', () => {
           `${env.MICROSOFT_API_URL}/teams/:teamId/channels/:channelId/messages/:messageId/replies/:replyId`,
           ({ request, params }) => {
             if (request.headers.get('Authorization') === `Bearer ${invalidDataToken}`) {
-              return Response.json(null);
+              return new Response(JSON.stringify(null));
             }
 
             if (request.headers.get('Authorization') !== `Bearer ${validToken}`) {
@@ -213,7 +212,7 @@ describe('replies connector', () => {
               return new Response(undefined, { status: 400 });
             }
 
-            return Response.json(reply);
+            return new Response(JSON.stringify(reply));
           }
         )
       );
@@ -287,7 +286,7 @@ describe('replies connector', () => {
               return new Response(undefined, { status: 400 });
             }
 
-            return Response.json({ message: 'reply was deleted' });
+            return new Response(JSON.stringify({ message: 'reply was deleted' }));
           }
         )
       );

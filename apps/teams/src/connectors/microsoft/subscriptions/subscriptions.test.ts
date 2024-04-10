@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call -- test conveniency */
-/* eslint-disable @typescript-eslint/no-unsafe-return -- test conveniency */
-
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { http } from 'msw';
 import { env } from '@/env';
@@ -57,14 +54,14 @@ describe('subscriptions connector', () => {
           }
 
           if (request.headers.get('Authorization') === `Bearer ${invalidDataToken}`) {
-            return Response.json(null);
+            return new Response(JSON.stringify(null));
           }
 
           if (request.headers.get('Authorization') !== `Bearer ${validToken}`) {
             return new Response(undefined, { status: 401 });
           }
 
-          return Response.json(subscription);
+          return new Response(JSON.stringify(subscription));
         })
       );
     });
@@ -138,7 +135,7 @@ describe('subscriptions connector', () => {
               return new Response(undefined, { status: 400 });
             }
 
-            return Response.json({ message: 'subscription has been updated' });
+            return new Response(JSON.stringify({ message: 'subscription has been updated' }));
           }
         )
       );
@@ -180,7 +177,7 @@ describe('subscriptions connector', () => {
               return new Response(undefined, { status: 400 });
             }
 
-            return Response.json({ message: 'subscription has been deleted' });
+            return new Response(JSON.stringify({ message: 'subscription has been deleted' }));
           }
         )
       );

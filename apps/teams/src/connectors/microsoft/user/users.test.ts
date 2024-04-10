@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call -- test conveniency */
-/* eslint-disable @typescript-eslint/no-unsafe-return -- test conveniency */
 import { http } from 'msw';
 import { describe, expect, test, beforeEach } from 'vitest';
 import { env } from '@/env';
@@ -64,11 +62,13 @@ describe('getUsers', () => {
         const nextPageUrl = new URL(url);
         nextPageUrl.searchParams.set('$skiptoken', nextSkipToken);
 
-        return Response.json({
-          '@odata.nextLink':
-            skipToken === endSkipToken ? null : decodeURIComponent(nextPageUrl.toString()),
-          value: formatedUsers.slice(0, top ? Number(top) : 0),
-        });
+        return new Response(
+          JSON.stringify({
+            '@odata.nextLink':
+              skipToken === endSkipToken ? null : decodeURIComponent(nextPageUrl.toString()),
+            value: formatedUsers.slice(0, top ? Number(top) : 0),
+          })
+        );
       })
     );
   });

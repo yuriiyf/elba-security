@@ -33,6 +33,7 @@ describe('refresh-token', () => {
   afterAll(() => {
     vi.useRealTimers();
   });
+
   test('should abort sync when organisation is not registered', async () => {
     vi.spyOn(authConnector, 'getToken').mockResolvedValue({
       token: newToken,

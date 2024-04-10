@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call -- test conveniency */
-/* eslint-disable @typescript-eslint/no-unsafe-return -- test conveniency */
-
 import { http } from 'msw';
 import { describe, expect, test, beforeEach } from 'vitest';
 import { env } from '@/env';
@@ -79,9 +76,11 @@ describe('channels connector', () => {
             ? formatedChannels.filter((channel) => channel.membershipType !== 'private')
             : [];
 
-          return Response.json({
-            value: filterChannels,
-          });
+          return new Response(
+            JSON.stringify({
+              value: filterChannels,
+            })
+          );
         })
       );
     });
@@ -113,7 +112,7 @@ describe('channels connector', () => {
           `${env.MICROSOFT_API_URL}/teams/:teamId/channels/:channelId`,
           ({ request, params }) => {
             if (request.headers.get('Authorization') === `Bearer ${invalidDataToken}`) {
-              return Response.json(null);
+              return new Response(JSON.stringify(null));
             }
 
             if (request.headers.get('Authorization') !== `Bearer ${validToken}`) {
@@ -139,7 +138,7 @@ describe('channels connector', () => {
               }
             }
 
-            return Response.json(validChannel);
+            return new Response(JSON.stringify(validChannel));
           }
         )
       );

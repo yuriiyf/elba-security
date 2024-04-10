@@ -1,13 +1,13 @@
 import { createInngestFunctionMock } from '@elba-security/test-utils';
 import { describe, expect, test, vi } from 'vitest';
 import { NonRetriableError } from 'inngest';
+import { sql } from 'drizzle-orm';
 import * as channelsConnector from '@/connectors/microsoft/channels/channels';
 import { db } from '@/database/client';
 import { channelsTable, organisationsTable } from '@/database/schema';
 import { encrypt } from '@/common/crypto';
 import { syncChannels } from '@/inngest/functions/channels/sync-channels';
 import type { MicrosoftChannel } from '@/connectors/microsoft/channels/channels';
-import { sql } from 'drizzle-orm';
 
 const token = 'token';
 const encryptedToken = await encrypt(token);

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call -- test conveniency */
-/* eslint-disable @typescript-eslint/no-unsafe-return -- test conveniency */
 import { http } from 'msw';
 import { describe, expect, test, beforeEach } from 'vitest';
 import { env } from '@/env';
@@ -37,7 +35,7 @@ describe('getToken', () => {
           ) {
             return new Response(undefined, { status: 400 });
           }
-          return Response.json({ access_token: token, expires_in: expiresIn });
+          return new Response(JSON.stringify({ access_token: token, expires_in: expiresIn }));
         }
       )
     );
