@@ -54,7 +54,7 @@ export const syncMessages = inngest.createFunction(
       throw new NonRetriableError(`Could not retrieve organisation with id=${organisationId}`);
     }
 
-    const { nextSkipToken, validMessages } = await step.run('paginate', async () => {
+    const { nextSkipToken, syncedMessages } = await step.run('paginate', async () => {
       const messages = await getMessages({
         token: await decrypt(organisation.token),
         teamId,
@@ -111,11 +111,11 @@ export const syncMessages = inngest.createFunction(
         'replies@odata.nextLink': message['replies@odata.nextLink'],
       }));
 
-      return { nextSkipToken: messages.nextSkipToken, validMessages: selectedMessagesFields };
+      return { nextSkipToken: messages.nextSkipToken, syncedMessages: selectedMessagesFields };
     });
 
-    if (validMessages.length) {
-      const messagesToSyncReplies = validMessages.filter((message) =>
+    if (syncedMessages.length) {
+      const messagesToSyncReplies = syncedMessages.filter((message) =>
         Boolean(message['replies@odata.nextLink'])
       );
 

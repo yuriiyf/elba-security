@@ -12,7 +12,7 @@ export const channelsTable = pgTable('channels', {
   id: text('id').primaryKey(),
   channelId: text('channel_id').notNull(),
   organisationId: uuid('organisation_id')
-    .references(() => organisationsTable.id)
+    .references(() => organisationsTable.id, { onDelete: 'cascade', onUpdate: 'restrict' })
     .notNull(),
   membershipType: text('membership_type').notNull(),
   displayName: text('display_name').notNull(),
@@ -21,7 +21,7 @@ export const channelsTable = pgTable('channels', {
 export const subscriptionsTable = pgTable('subscriptions', {
   id: text('id').primaryKey(),
   organisationId: uuid('organisation_id')
-    .references(() => organisationsTable.id)
+    .references(() => organisationsTable.id, { onDelete: 'cascade', onUpdate: 'restrict' })
     .notNull(),
   resource: text('resource').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),

@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { http } from 'msw';
+import { server } from '@elba-security/test-utils';
 import { env } from '@/env';
 import {
   createSubscription,
@@ -8,7 +9,6 @@ import {
 } from '@/connectors/microsoft/subscriptions/subscriptions';
 import { encrypt } from '@/common/crypto';
 import { MicrosoftError } from '@/connectors/microsoft/commons/error';
-import { server } from '../../../../vitest/setup-msw-handlers';
 
 const validToken = 'token';
 const invalidDataToken = 'invalid-data-token';

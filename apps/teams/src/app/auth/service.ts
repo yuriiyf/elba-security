@@ -3,6 +3,7 @@ import { encrypt } from '@/common/crypto';
 import { organisationsTable } from '@/database/schema';
 import { db } from '@/database/client';
 import { inngest } from '@/inngest/client';
+import { getUsers } from '@/connectors/microsoft/user/users';
 
 type SetupOrganisationParams = {
   organisationId: string;
@@ -17,8 +18,14 @@ export const setupOrganisation = async ({
 }: SetupOrganisationParams) => {
   const { token, expiresIn } = await getToken(tenantId);
 
-  const encodedToken = await encrypt(token);
+  try {
+    // we test the installaton: microsoft API takes time to propagate it through its services
+    await getUsers({ token, tenantId, skipToken: null });
+  } catch {
+    return { isAppInstallationCompleted: false };
+  }
 
+  const encodedToken = await encrypt(token);
   await db
     .insert(organisationsTable)
     .values({
@@ -56,8 +63,10 @@ export const setupOrganisation = async ({
       name: 'teams/token.refresh.triggered',
       data: {
         organisationId,
-        expiresIn,
+        expiresAt: expiresIn,
       },
     },
   ]);
+
+  return { isAppInstallationCompleted: true };
 };

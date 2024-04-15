@@ -4,9 +4,8 @@ import { z } from 'zod';
 import { handleSubscriptionEvent } from '@/app/api/webhook/microsoft/lifecycle-notifications/service';
 import type { MicrosoftSubscriptionEvent } from '@/app/api/webhook/microsoft/lifecycle-notifications/types';
 import type { WebhookResponse } from '@/app/api/webhook/microsoft/event-handler/types';
-import { env } from '@/env';
 
-export const preferredRegion = env.VERCEL_PREFERRED_REGION;
+export const preferredRegion = 'fra1';
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 

@@ -1,9 +1,9 @@
 import { http } from 'msw';
 import { describe, expect, test, beforeEach } from 'vitest';
+import { server } from '@elba-security/test-utils';
 import { env } from '@/env';
 import { deleteReply, getReplies, getReply } from '@/connectors/microsoft/replies/replies';
 import type { MicrosoftReply } from '@/connectors/microsoft/types';
-import { server } from '../../../../vitest/setup-msw-handlers';
 import { MicrosoftError } from '../commons/error';
 
 const teamId = 'some-team-id';

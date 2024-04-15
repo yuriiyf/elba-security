@@ -1,9 +1,9 @@
 import { http } from 'msw';
 import { describe, expect, test, beforeEach } from 'vitest';
+import { server } from '@elba-security/test-utils';
 import { env } from '@/env';
 import type { MicrosoftChannel } from '@/connectors/microsoft/channels/channels';
 import { getChannel, getChannels } from '@/connectors/microsoft/channels/channels';
-import { server } from '../../../../vitest/setup-msw-handlers';
 import { MicrosoftError } from '../commons/error';
 
 const validToken = 'token-1234';

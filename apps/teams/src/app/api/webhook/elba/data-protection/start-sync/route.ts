@@ -2,9 +2,8 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { parseWebhookEventData } from '@elba-security/sdk';
 import { startDataProtectionSync } from '@/app/api/webhook/elba/data-protection/start-sync/service';
-import { env } from '@/env';
 
-export const preferredRegion = env.VERCEL_PREFERRED_REGION;
+export const preferredRegion = 'fra1';
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 

@@ -5,9 +5,9 @@ import { subMinutes } from 'date-fns/subMinutes';
 import { db } from '@/database/client';
 import { organisationsTable } from '@/database/schema';
 import { inngest } from '@/inngest/client';
-import { getToken } from '@/connectors/microsoft/auth';
 import { env } from '@/env';
 import { encrypt } from '@/common/crypto';
+import { getToken } from '@/connectors/microsoft/auth/auth';
 
 export const refreshToken = inngest.createFunction(
   {
@@ -18,7 +18,7 @@ export const refreshToken = inngest.createFunction(
     },
     cancelOn: [
       {
-        event: 'teams/app.installed',
+        event: 'teams/teams.elba_app.installed',
         match: 'data.organisationId',
       },
     ],
@@ -30,7 +30,7 @@ export const refreshToken = inngest.createFunction(
 
     await step.sleepUntil('wait-before-expiration', subMinutes(new Date(expiresAt), 5));
 
-    const nextExpiresAt = await step.run('refresh-token', async () => {
+    await step.run('refresh-token', async () => {
       const [organisation] = await db
         .select({
           tenantId: organisationsTable.tenantId,
@@ -58,7 +58,7 @@ export const refreshToken = inngest.createFunction(
       name: 'teams/token.refresh.triggered',
       data: {
         organisationId,
-        expiresAt: nextExpiresAt,
+        expiresAt,
       },
     });
   }
