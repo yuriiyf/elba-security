@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { parseWebhookEventData } from '@elba-security/sdk';
-import { refreshDataProtectionObject } from '@/app/api/webhook/elba/data-protection/refresh-object/service';
+import { refreshDataProtectionObject } from '@/app/api/webhooks/elba/data-protection/refresh-object/service';
 
 export const preferredRegion = 'fra1';
 export const runtime = 'edge';

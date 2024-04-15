@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { inngest } from '@/inngest/client';
-import type { SubscriptionPayload } from '@/app/api/webhook/microsoft/event-handler/types';
+import type { SubscriptionPayload } from '@/app/api/webhooks/microsoft/event-handler/types';
 
 export enum EventType {
   ChannelCreated = 'channel_created',

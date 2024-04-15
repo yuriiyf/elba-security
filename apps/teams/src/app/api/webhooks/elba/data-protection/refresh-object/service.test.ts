@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from 'vitest';
-import { deleteDataProtectionObject } from '@/app/api/webhook/elba/data-protection/delete-object/service';
-import type { MessageMetadata } from '@/connectors/elba/data-protection/metadata';
 import { inngest } from '@/inngest/client';
+import { refreshDataProtectionObject } from '@/app/api/webhooks/elba/data-protection/refresh-object/service';
+import type { MessageMetadata } from '@/connectors/elba/data-protection/metadata';
 
 const organisationId = '98449620-9738-4a9c-8db0-1e4ef5a6a9e8';
 
@@ -14,10 +14,10 @@ const metadata: MessageMetadata = {
   type: 'message',
 };
 
-describe('deleteDataProtectionObject', () => {
+describe('refreshDataProtectionObject', () => {
   test('should throw is the metadata is invalid', async () => {
     await expect(
-      deleteDataProtectionObject({ organisationId, metadata: null })
+      refreshDataProtectionObject({ organisationId, metadata: null })
     ).rejects.toThrowError();
   });
 
@@ -25,11 +25,13 @@ describe('deleteDataProtectionObject', () => {
     // @ts-expect-error -- this is a mock
     const send = vi.spyOn(inngest, 'send').mockResolvedValue(undefined);
 
-    await expect(deleteDataProtectionObject({ organisationId, metadata })).resolves.toBeUndefined();
+    await expect(
+      refreshDataProtectionObject({ organisationId, metadata })
+    ).resolves.toBeUndefined();
 
     expect(send).toBeCalledTimes(1);
     expect(send).toBeCalledWith({
-      name: 'teams/data.protection.delete.triggered',
+      name: 'teams/data.protection.refresh.triggered',
       data: {
         organisationId,
         metadata,

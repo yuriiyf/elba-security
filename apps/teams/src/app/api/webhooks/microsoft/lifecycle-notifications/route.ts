@@ -1,9 +1,9 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { handleSubscriptionEvent } from '@/app/api/webhook/microsoft/lifecycle-notifications/service';
-import type { MicrosoftSubscriptionEvent } from '@/app/api/webhook/microsoft/lifecycle-notifications/types';
-import type { WebhookResponse } from '@/app/api/webhook/microsoft/event-handler/types';
+import { handleSubscriptionEvent } from '@/app/api/webhooks/microsoft/lifecycle-notifications/service';
+import type { MicrosoftSubscriptionEvent } from '@/app/api/webhooks/microsoft/lifecycle-notifications/types';
+import type { WebhookResponse } from '@/app/api/webhooks/microsoft/event-handler/types';
 
 export const preferredRegion = 'fra1';
 export const runtime = 'edge';
