@@ -28,9 +28,9 @@ export const refreshToken = inngest.createFunction(
   async ({ event, step }) => {
     const { organisationId, expiresAt } = event.data;
 
-    await step.sleepUntil('wait-before-expiration', subMinutes(new Date(expiresAt), 5));
+    await step.sleepUntil('wait-before-expiration', subMinutes(new Date(expiresAt), 30));
 
-    await step.run('refresh-token', async () => {
+    const nextExpiresAt = await step.run('refresh-token', async () => {
       const [organisation] = await db
         .select({
           tenantId: organisationsTable.tenantId,
@@ -58,7 +58,7 @@ export const refreshToken = inngest.createFunction(
       name: 'teams/token.refresh.triggered',
       data: {
         organisationId,
-        expiresAt,
+        expiresAt: new Date(nextExpiresAt).getTime(),
       },
     });
   }

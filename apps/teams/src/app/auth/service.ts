@@ -1,3 +1,4 @@
+import { addSeconds } from 'date-fns/addSeconds';
 import { getToken } from '@/connectors/microsoft/auth/auth';
 import { encrypt } from '@/common/crypto';
 import { organisationsTable } from '@/database/schema';
@@ -63,7 +64,7 @@ export const setupOrganisation = async ({
       name: 'teams/token.refresh.triggered',
       data: {
         organisationId,
-        expiresAt: expiresIn,
+        expiresAt: addSeconds(new Date(), expiresIn).getTime(),
       },
     },
   ]);
