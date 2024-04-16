@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
 import { NonRetriableError } from 'inngest';
 import { createInngestFunctionMock } from '@elba-security/test-utils';
 import { eq } from 'drizzle-orm';
-import { EventType } from '@/app/api/microsoft/event-handler/service';
+import { EventType } from '@/app/api/webhook/microsoft/event-handler/service';
 import { handleTeamsWebhookEvent } from '@/inngest/functions/teams/handle-team-webhook-event';
 import { encrypt } from '@/common/crypto';
 import { db } from '@/database/client';

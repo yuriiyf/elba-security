@@ -1,6 +1,6 @@
 import { inArray } from 'drizzle-orm';
 import { inngest } from '@/inngest/client';
-import type { MicrosoftSubscriptionEvent } from '@/app/api/microsoft/lifecycle-notifications/types';
+import type { MicrosoftSubscriptionEvent } from '@/app/api/webhook/microsoft/lifecycle-notifications/types';
 import { db } from '@/database/client';
 import { organisationsTable } from '@/database/schema';
 

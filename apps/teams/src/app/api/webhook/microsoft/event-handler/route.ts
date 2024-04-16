@@ -1,8 +1,11 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { handleWebhook } from '@/app/api/microsoft/event-handler/service';
-import type { SubscriptionPayload, WebhookResponse } from '@/app/api/microsoft/event-handler/types';
-import { subscriptionSchema } from '@/app/api/microsoft/event-handler/schema';
+import { handleWebhook } from '@/app/api/webhook/microsoft/event-handler/service';
+import type {
+  SubscriptionPayload,
+  WebhookResponse,
+} from '@/app/api/webhook/microsoft/event-handler/types';
+import { subscriptionSchema } from '@/app/api/webhook/microsoft/event-handler/schema';
 
 export const preferredRegion = 'fra1';
 export const runtime = 'edge';
