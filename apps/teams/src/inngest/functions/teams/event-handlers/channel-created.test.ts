@@ -8,7 +8,7 @@ import { db } from '@/database/client';
 import { channelsTable, organisationsTable } from '@/database/schema';
 import { encrypt, decrypt } from '@/common/crypto';
 import { inngest } from '@/inngest/client';
-import { EventType } from '@/app/api/webhooks/microsoft/event-handler/service';
+import { EventType } from '@/app/api/microsoft/event-handler/service';
 import type { MicrosoftChannel } from '@/connectors/microsoft/channels/channels';
 
 const privateChannel: MicrosoftChannel = {

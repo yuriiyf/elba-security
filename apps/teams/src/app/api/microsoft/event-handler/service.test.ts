@@ -1,8 +1,8 @@
 import { describe, expect, test, vi } from 'vitest';
 import { inngest } from '@/inngest/client';
-import type { WebhookPayload } from '@/app/api/webhooks/microsoft/event-handler/service';
-import { EventType, handleWebhook } from '@/app/api/webhooks/microsoft/event-handler/service';
-import type { SubscriptionPayload } from '@/app/api/webhooks/microsoft/event-handler/types';
+import type { WebhookPayload } from '@/app/api/microsoft/event-handler/service';
+import { EventType, handleWebhook } from '@/app/api/microsoft/event-handler/service';
+import type { SubscriptionPayload } from '@/app/api/microsoft/event-handler/types';
 
 const channelData: SubscriptionPayload[] = [
   {

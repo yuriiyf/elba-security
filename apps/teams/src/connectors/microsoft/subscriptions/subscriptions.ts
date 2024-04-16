@@ -29,8 +29,8 @@ export const createSubscription = async ({
     },
     body: JSON.stringify({
       changeType,
-      notificationUrl: `${env.WEBHOOK_URL}/api/webhooks/microsoft/event-handler`,
-      lifecycleNotificationUrl: `${env.WEBHOOK_URL}/api/webhooks/microsoft/lifecycle-notifications`,
+      notificationUrl: `${env.WEBHOOK_URL}/api/microsoft/event-handler`,
+      lifecycleNotificationUrl: `${env.WEBHOOK_URL}/api/microsoft/lifecycle-notifications`,
       resource,
       expirationDateTime: addDays(new Date(), Number(env.SUBSCRIBE_EXPIRATION_DAYS)).toISOString(),
     }),

@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from 'vitest';
-import { handleSubscriptionEvent } from '@/app/api/webhooks/microsoft/lifecycle-notifications/service';
+import { handleSubscriptionEvent } from '@/app/api/microsoft/lifecycle-notifications/service';
 import { inngest } from '@/inngest/client';
-import type { MicrosoftSubscriptionEvent } from '@/app/api/webhooks/microsoft/lifecycle-notifications/types';
+import type { MicrosoftSubscriptionEvent } from '@/app/api/microsoft/lifecycle-notifications/types';
 
 const data: MicrosoftSubscriptionEvent[] = [
   {

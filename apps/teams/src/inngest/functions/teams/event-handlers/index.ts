@@ -1,8 +1,8 @@
 import { channelCreatedHandler } from '@/inngest/functions/teams/event-handlers/channel-created';
 import type { TeamsWebhookHandlerContext } from '@/inngest/functions/teams/handle-team-webhook-event';
 import { channelDeletedHandler } from '@/inngest/functions/teams/event-handlers/channel-deleted';
-import type { WebhookPayload } from '@/app/api/webhooks/microsoft/event-handler/service';
-import { EventType } from '@/app/api/webhooks/microsoft/event-handler/service';
+import type { WebhookPayload } from '@/app/api/microsoft/event-handler/service';
+import { EventType } from '@/app/api/microsoft/event-handler/service';
 import { messageCreatedOrUpdatedHandler } from '@/inngest/functions/teams/event-handlers/message-created-updated';
 import { replyCreatedOrUpdatedHandler } from '@/inngest/functions/teams/event-handlers/reply-created-updated';
 import { messageDeletedHandler } from '@/inngest/functions/teams/event-handlers/message-deleted';
