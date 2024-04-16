@@ -3,7 +3,7 @@ import { NonRetriableError } from 'inngest';
 import { createInngestFunctionMock, spyOnElba } from '@elba-security/test-utils';
 import { eq } from 'drizzle-orm';
 import { handleTeamsWebhookEvent } from '@/inngest/functions/teams/handle-team-webhook-event';
-import { EventType } from '@/app/api/webhooks/microsoft/event-handler/service';
+import { EventType } from '@/app/api/microsoft/event-handler/service';
 import { db } from '@/database/client';
 import { channelsTable, organisationsTable } from '@/database/schema';
 import { decrypt, encrypt } from '@/common/crypto';
