@@ -15,7 +15,7 @@ export const deleteDataProtectionObject = async ({
   }
 
   await inngest.send({
-    name: 'teams/data.protection.delete.triggered',
+    name: 'teams/data_protection.delete_object.requested',
     data: {
       organisationId,
       metadata: messageMetadataResult.data,

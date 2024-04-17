@@ -1,6 +1,6 @@
 import { createInngestFunctionMock } from '@elba-security/test-utils';
 import { describe, expect, test, vi } from 'vitest';
-import { deleteDataProtection } from '@/inngest/functions/data-protections/delete-data-protection';
+import { deleteDataProtectionObject } from '@/inngest/functions/data-protection/delete-data-protection-object';
 import { db } from '@/database/client';
 import { organisationsTable } from '@/database/schema';
 import * as messageConnector from '@/connectors/microsoft/messages/messages';
@@ -9,8 +9,8 @@ import * as replyConnector from '@/connectors/microsoft/replies/replies';
 import type { MessageMetadata } from '@/connectors/elba/data-protection/metadata';
 
 const setup = createInngestFunctionMock(
-  deleteDataProtection,
-  'teams/data.protection.delete.triggered'
+  deleteDataProtectionObject,
+  'teams/data_protection.delete_object.requested'
 );
 
 const token = 'token';
@@ -41,7 +41,7 @@ const replyMetadata: MessageMetadata = {
   type: 'reply',
 };
 
-describe('deleteDataProtection', () => {
+describe('delete-data-protection-object', () => {
   test('should throw if the organisation is not found', async () => {
     // @ts-expect-error this is a mock
     const [result] = setup(null);

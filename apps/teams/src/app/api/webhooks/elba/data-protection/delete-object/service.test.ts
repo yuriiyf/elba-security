@@ -29,7 +29,7 @@ describe('deleteDataProtectionObject', () => {
 
     expect(send).toBeCalledTimes(1);
     expect(send).toBeCalledWith({
-      name: 'teams/data.protection.delete.triggered',
+      name: 'teams/data_protection.delete_object.requested',
       data: {
         organisationId,
         metadata,

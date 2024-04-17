@@ -7,12 +7,12 @@ import { deleteMessage } from '@/connectors/microsoft/messages/messages';
 import { decrypt } from '@/common/crypto';
 import { deleteReply } from '@/connectors/microsoft/replies/replies';
 
-export const deleteDataProtection = inngest.createFunction(
+export const deleteDataProtectionObject = inngest.createFunction(
   {
-    id: 'teams/delete-data-protection',
+    id: 'teams-delete-data-protection-object',
     retries: env.DELETE_DATA_PROTECTION_MAX_RETRY,
   },
-  { event: 'teams/data.protection.delete.triggered' },
+  { event: 'teams/data_protection.delete_object.requested' },
   async ({ event }) => {
     const { organisationId, metadata } = event.data;
 
