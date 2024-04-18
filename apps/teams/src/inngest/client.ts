@@ -118,12 +118,6 @@ export const inngest = new Inngest({
         metadata: MessageMetadata;
       };
     };
-    'teams/data_protection.delete_object.requested': {
-      data: {
-        organisationId: string;
-        metadata: MessageMetadata;
-      };
-    };
     'teams/app.uninstalled': {
       data: {
         organisationId: string;

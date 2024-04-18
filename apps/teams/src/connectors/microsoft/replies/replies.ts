@@ -104,28 +104,3 @@ export const getReply = async ({
 
   return result.data;
 };
-
-export const deleteReply = async ({
-  token,
-  teamId,
-  channelId,
-  messageId,
-  replyId,
-}: GetReplyParams) => {
-  const url = new URL(
-    `${env.MICROSOFT_API_URL}/teams/${teamId}/channels/${channelId}/messages/${messageId}/replies/${replyId}/softDelete`
-  );
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new MicrosoftError('Could not delete reply', { response });
-  }
-
-  return { message: 'reply was deleted' };
-};

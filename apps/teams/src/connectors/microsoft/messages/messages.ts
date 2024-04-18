@@ -97,22 +97,3 @@ export const getMessage = async ({ token, teamId, channelId, messageId }: GetMes
 
   return result.data;
 };
-
-export const deleteMessage = async ({ token, teamId, channelId, messageId }: GetMessageParams) => {
-  const url = new URL(
-    `${env.MICROSOFT_API_URL}/teams/${teamId}/channels/${channelId}/messages/${messageId}/softDelete`
-  );
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new MicrosoftError('Could not delete message', { response });
-  }
-
-  return { message: 'message was deleted' };
-};

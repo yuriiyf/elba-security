@@ -2,7 +2,7 @@ import { http } from 'msw';
 import { describe, expect, test, beforeEach } from 'vitest';
 import { server } from '@elba-security/test-utils';
 import { env } from '@/env';
-import { deleteMessage, getMessage, getMessages } from '@/connectors/microsoft/messages/messages';
+import { getMessage, getMessages } from '@/connectors/microsoft/messages/messages';
 import type { MicrosoftMessage } from '@/connectors/microsoft/types';
 import { MicrosoftError } from '../commons/error';
 
@@ -250,64 +250,6 @@ describe('messages connector', () => {
           token: validToken,
         })
       ).resolves.toBeNull();
-    });
-  });
-
-  describe('deleteMessage', () => {
-    beforeEach(() => {
-      server.use(
-        http.post(
-          `${env.MICROSOFT_API_URL}/teams/:teamId/channels/:channelId/messages/:messageId/softDelete`,
-          ({ request, params }) => {
-            if (request.headers.get('Authorization') !== `Bearer ${validToken}`) {
-              return new Response(undefined, { status: 401 });
-            }
-
-            if (
-              params.teamId !== teamId ||
-              params.channelId !== channelId ||
-              params.messageId !== messageId
-            ) {
-              return new Response(undefined, { status: 400 });
-            }
-
-            return new Response(JSON.stringify({ message: 'message was deleted' }));
-          }
-        )
-      );
-    });
-
-    test('should delete the message when the token is valid, teamId, channelId and messageId are valid ', async () => {
-      await expect(
-        deleteMessage({
-          teamId,
-          channelId,
-          messageId,
-          token: validToken,
-        })
-      ).resolves.toStrictEqual({ message: 'message was deleted' });
-    });
-
-    test('should delete the message when the token is valid, teamId, channelId and messageId are invalid ', async () => {
-      await expect(
-        deleteMessage({
-          teamId: 'invalid-team-id',
-          channelId: 'invalid-channel-id',
-          messageId: 'invalid-message-id',
-          token: validToken,
-        })
-      ).rejects.toBeInstanceOf(MicrosoftError);
-    });
-
-    test('should throw when the token is invalid', async () => {
-      await expect(
-        deleteMessage({
-          teamId,
-          channelId,
-          messageId,
-          token: invalidDataToken,
-        })
-      ).rejects.toBeInstanceOf(MicrosoftError);
     });
   });
 });
