@@ -7,6 +7,7 @@ export const preferredRegion = 'fra1';
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
+// This is not working due to Teams API limitations
 export const POST = async (request: NextRequest) => {
   const data: unknown = await request.json();
 

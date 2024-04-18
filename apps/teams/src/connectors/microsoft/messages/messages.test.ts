@@ -209,7 +209,7 @@ describe('messages connector', () => {
               params.channelId !== channelId ||
               params.messageId !== messageId
             ) {
-              return new Response(undefined, { status: 400 });
+              return new Response(undefined, { status: 404 });
             }
 
             return new Response(JSON.stringify(message));
@@ -241,7 +241,7 @@ describe('messages connector', () => {
       ).rejects.toBeInstanceOf(MicrosoftError);
     });
 
-    test('should throw when the token is invalid, and the messageId is invalid', async () => {
+    test("should return null when the token is invalid, and message doesn't exists", async () => {
       await expect(
         getMessage({
           teamId,
@@ -249,18 +249,7 @@ describe('messages connector', () => {
           messageId: 'invalid-message-id',
           token: validToken,
         })
-      ).rejects.toBeInstanceOf(MicrosoftError);
-    });
-
-    test('should throw when the token and the messageId are invalid and the teamId or channelId are invalid', async () => {
-      await expect(
-        getMessage({
-          teamId: 'invalid-team-id',
-          channelId: 'invalid-channel-id',
-          messageId,
-          token: validToken,
-        })
-      ).rejects.toBeInstanceOf(MicrosoftError);
+      ).resolves.toBeNull();
     });
   });
 

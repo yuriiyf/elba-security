@@ -85,6 +85,9 @@ export const getReply = async ({
   });
 
   if (!response.ok) {
+    if (response.status === 404) {
+      return null;
+    }
     throw new MicrosoftError('Could not retrieve reply', { response });
   }
 

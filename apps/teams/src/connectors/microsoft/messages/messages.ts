@@ -78,6 +78,9 @@ export const getMessage = async ({ token, teamId, channelId, messageId }: GetMes
   });
 
   if (!response.ok) {
+    if (response.status === 404) {
+      return null;
+    }
     throw new MicrosoftError('Could not retrieve message', { response });
   }
 
