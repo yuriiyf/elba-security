@@ -189,10 +189,8 @@ describe('subscriptions connector', () => {
       });
     });
 
-    test('should throw when the token is invalid', async () => {
-      await expect(deleteSubscription(invalidToken, subscription.id)).rejects.toBeInstanceOf(
-        MicrosoftError
-      );
+    test("shouldn't throw when there an error", async () => {
+      await expect(deleteSubscription(invalidToken, subscription.id)).resolves.toBeNull();
     });
   });
 });

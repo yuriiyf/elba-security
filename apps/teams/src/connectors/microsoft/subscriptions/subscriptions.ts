@@ -1,5 +1,6 @@
 import { addDays } from 'date-fns';
 import { z } from 'zod';
+import { logger } from '@elba-security/logger';
 import { decrypt } from '@/common/crypto';
 import { env } from '@/env';
 import { MicrosoftError } from '@/connectors/microsoft/commons/error';
@@ -85,7 +86,11 @@ export const deleteSubscription = async (encryptToken: string, subscriptionId: s
   });
 
   if (!response.ok) {
-    throw new MicrosoftError(`Could not delete to resource=${subscriptionId}`, { response });
+    logger.warn('Failed to delete subscription', {
+      subscriptionId,
+      status: response.status,
+    });
+    return null;
   }
 
   return { message: 'subscription has been deleted' };

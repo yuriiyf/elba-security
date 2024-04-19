@@ -10,12 +10,14 @@ const channelData: SubscriptionPayload[] = [
     changeType: 'created',
     resource: "teams('team-id-0')/channels('channel-id-0')",
     tenantId: 'tenant-id-0',
+    clientState: 'secret',
   },
   {
     subscriptionId: 'subscription-id-1',
     changeType: 'deleted',
     resource: "teams('team-id-1')/channels('channel-id-1')",
     tenantId: 'tenant-id-1',
+    clientState: 'secret',
   },
 ];
 const invalidData: SubscriptionPayload[] = [
@@ -24,12 +26,14 @@ const invalidData: SubscriptionPayload[] = [
     changeType: 'created',
     resource: "teams('team-id-0')",
     tenantId: 'tenant-id-0',
+    clientState: 'secret',
   },
   {
     subscriptionId: 'subscription-id-1',
     changeType: 'deleted',
     resource: "channels('channel-id-1')",
     tenantId: 'tenant-id-1',
+    clientState: 'secret',
   },
 ];
 
@@ -39,12 +43,14 @@ const messageData: SubscriptionPayload[] = [
     changeType: 'created',
     resource: "teams('team-id-0')/channels('channel-id-0')/messages('message-id-0')",
     tenantId: 'tenant-id-0',
+    clientState: 'secret',
   },
   {
     subscriptionId: 'subscription-id-1',
     changeType: 'created',
     resource: "teams('team-id-1')/channels('channel-id-1')/messages('message-id-1')",
     tenantId: 'tenant-id-1',
+    clientState: 'secret',
   },
 ];
 
@@ -55,6 +61,7 @@ const replyData: SubscriptionPayload[] = [
     resource:
       "teams('team-id-0')/channels('channel-id-0')/messages('message-id-0')/replies('reply-id-0')",
     tenantId: 'tenant-id-0',
+    clientState: 'secret',
   },
   {
     subscriptionId: 'subscription-id-1',
@@ -62,6 +69,7 @@ const replyData: SubscriptionPayload[] = [
     resource:
       "teams('team-id-1')/channels('channel-id-1')/messages('message-id-1')/replies('reply-id-1')",
     tenantId: 'tenant-id-1',
+    clientState: 'secret',
   },
 ];
 
