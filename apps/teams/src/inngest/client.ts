@@ -123,6 +123,14 @@ export const inngest = new Inngest({
         organisationId: string;
       };
     };
+    'teams/organisations.start.recreate.subscriptions': {
+      data: Record<string, never>;
+    };
+    'teams/organisation.recreate.subscriptions': {
+      data: {
+        organisationId: string;
+      };
+    };
   }>(),
   middleware: [rateLimitMiddleware, unauthorizedMiddleware, sentryMiddleware],
   logger,

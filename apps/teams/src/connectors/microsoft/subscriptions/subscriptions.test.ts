@@ -32,6 +32,7 @@ const subscriptionChangeType = Math.random() > 0.5 ? 'created,updated,deleted' :
 const subscription = {
   id: 'subscription-id',
   resource: subscriptionResource,
+  changeType: 'created,updated,deleted',
 };
 
 describe('subscriptions connector', () => {

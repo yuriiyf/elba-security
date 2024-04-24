@@ -2,66 +2,59 @@ import { describe, expect, test, vi } from 'vitest';
 import { inngest } from '@/inngest/client';
 import type { WebhookPayload } from '@/app/api/webhooks/microsoft/event-handler/service';
 import { EventType, handleWebhook } from '@/app/api/webhooks/microsoft/event-handler/service';
-import type { SubscriptionPayload } from '@/app/api/webhooks/microsoft/event-handler/types';
+import type { MicrosoftEventHandlerPayload } from '@/app/api/webhooks/microsoft/event-handler/types';
 
-const channelData: SubscriptionPayload[] = [
+const channelData: MicrosoftEventHandlerPayload['value'] = [
   {
     subscriptionId: 'subscription-id-0',
     changeType: 'created',
     resource: "teams('team-id-0')/channels('channel-id-0')",
     tenantId: 'tenant-id-0',
-    clientState: 'secret',
   },
   {
     subscriptionId: 'subscription-id-1',
     changeType: 'deleted',
     resource: "teams('team-id-1')/channels('channel-id-1')",
     tenantId: 'tenant-id-1',
-    clientState: 'secret',
   },
 ];
-const invalidData: SubscriptionPayload[] = [
+const invalidData: MicrosoftEventHandlerPayload['value'] = [
   {
     subscriptionId: 'subscription-id-0',
     changeType: 'created',
     resource: "teams('team-id-0')",
     tenantId: 'tenant-id-0',
-    clientState: 'secret',
   },
   {
     subscriptionId: 'subscription-id-1',
     changeType: 'deleted',
     resource: "channels('channel-id-1')",
     tenantId: 'tenant-id-1',
-    clientState: 'secret',
   },
 ];
 
-const messageData: SubscriptionPayload[] = [
+const messageData: MicrosoftEventHandlerPayload['value'] = [
   {
     subscriptionId: 'subscription-id-0',
     changeType: 'created',
     resource: "teams('team-id-0')/channels('channel-id-0')/messages('message-id-0')",
     tenantId: 'tenant-id-0',
-    clientState: 'secret',
   },
   {
     subscriptionId: 'subscription-id-1',
     changeType: 'created',
     resource: "teams('team-id-1')/channels('channel-id-1')/messages('message-id-1')",
     tenantId: 'tenant-id-1',
-    clientState: 'secret',
   },
 ];
 
-const replyData: SubscriptionPayload[] = [
+const replyData: MicrosoftEventHandlerPayload['value'] = [
   {
     subscriptionId: 'subscription-id-0',
     changeType: 'created',
     resource:
       "teams('team-id-0')/channels('channel-id-0')/messages('message-id-0')/replies('reply-id-0')",
     tenantId: 'tenant-id-0',
-    clientState: 'secret',
   },
   {
     subscriptionId: 'subscription-id-1',
@@ -69,7 +62,6 @@ const replyData: SubscriptionPayload[] = [
     resource:
       "teams('team-id-1')/channels('channel-id-1')/messages('message-id-1')/replies('reply-id-1')",
     tenantId: 'tenant-id-1',
-    clientState: 'secret',
   },
 ];
 

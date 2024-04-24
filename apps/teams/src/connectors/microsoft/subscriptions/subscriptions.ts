@@ -8,17 +8,31 @@ import { MicrosoftError } from '@/connectors/microsoft/commons/error';
 const subscriptionSchema = z.object({
   id: z.string(),
   resource: z.string(),
+  changeType: z.string(),
 });
 
 type CreateSubscriptionData = {
   encryptToken: string;
   changeType: string;
   resource: string;
+  throwError?: boolean;
 };
+
+export type MicrosoftSubscription = z.infer<typeof subscriptionSchema>;
+
+const getJson = async (response: Response) => {
+  try {
+    return (await response.json()) as object;
+  } catch (err) {
+    return {};
+  }
+};
+
 export const createSubscription = async ({
   encryptToken,
   resource,
   changeType,
+  throwError = true,
 }: CreateSubscriptionData) => {
   const token = await decrypt(encryptToken);
 
@@ -34,12 +48,25 @@ export const createSubscription = async ({
       lifecycleNotificationUrl: `${env.WEBHOOK_URL}/api/webhooks/microsoft/lifecycle-notifications`,
       resource,
       expirationDateTime: addDays(new Date(), Number(env.SUBSCRIBE_EXPIRATION_DAYS)).toISOString(),
-      clientState: env.MICROSOFT_WEBHOOK_SECRET_KEY,
+      includeResourceData: true,
+      encryptionCertificate: env.MICROSOFT_WEBHOOK_PUBLIC_CERTIFICATE,
+      encryptionCertificateId: env.MICROSOFT_WEBHOOK_PUBLIC_CERTIFICATE_ID,
     }),
   });
 
   if (!response.ok) {
-    throw new MicrosoftError(`Could not subscribe to resource=${resource}`, { response });
+    if (throwError) {
+      throw new MicrosoftError(`Could not subscribe to resource=${resource}`, { response });
+    }
+
+    const error = await getJson(response);
+    logger.warn('Failed to create subscription', {
+      resource,
+      changeType,
+      status: response.status,
+      microsoftError: error,
+    });
+    return null;
   }
 
   const data = (await response.json()) as object;
@@ -86,9 +113,11 @@ export const deleteSubscription = async (encryptToken: string, subscriptionId: s
   });
 
   if (!response.ok) {
+    const error = await getJson(response);
     logger.warn('Failed to delete subscription', {
       subscriptionId,
       status: response.status,
+      microsoftError: error,
     });
     return null;
   }

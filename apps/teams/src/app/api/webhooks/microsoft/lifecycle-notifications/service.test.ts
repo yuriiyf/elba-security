@@ -1,9 +1,9 @@
 import { describe, expect, test, vi } from 'vitest';
 import { handleSubscriptionEvent } from '@/app/api/webhooks/microsoft/lifecycle-notifications/service';
 import { inngest } from '@/inngest/client';
-import type { MicrosoftSubscriptionEvent } from '@/app/api/webhooks/microsoft/lifecycle-notifications/types';
+import type { MicrosoftLifecycleHandlerPayload } from '@/app/api/webhooks/microsoft/lifecycle-notifications/types';
 
-const data: MicrosoftSubscriptionEvent[] = [
+const data: MicrosoftLifecycleHandlerPayload['value'] = [
   {
     subscriptionId: 'subscription-id-0',
     lifecycleEvent: 'reauthorizationRequired',
@@ -28,13 +28,15 @@ describe('handleSubscribeEvent', () => {
     await expect(handleSubscriptionEvent(data)).resolves.toBeUndefined();
 
     expect(send).toBeCalledWith(
-      data.map(({ subscriptionId, organisationId }) => ({
-        name: 'teams/subscription.refresh.requested',
-        data: {
-          organisationId,
-          subscriptionId,
-        },
-      }))
+      data
+        .filter((subscription) => subscription.lifecycleEvent === 'reauthorizationRequired')
+        .map(({ subscriptionId, organisationId }) => ({
+          name: 'teams/subscription.refresh.requested',
+          data: {
+            organisationId,
+            subscriptionId,
+          },
+        }))
     );
     expect(send).toBeCalledTimes(1);
   });
