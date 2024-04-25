@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       ...acc,
       {
         token: v,
-        tenantId: value[i]?.organisationId || '',
+        tenantId: value[i]?.organizationId || '',
       },
     ],
     []

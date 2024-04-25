@@ -15,7 +15,7 @@ export const handleSubscriptionEvent = async (
     ({ lifecycleEvent }) => lifecycleEvent === 'reauthorizationRequired'
   );
 
-  const tenantIds = reauthorizeEvents.map((tenant) => tenant.organisationId);
+  const tenantIds = reauthorizeEvents.map((event) => event.organizationId);
 
   const organisations = await db
     .select({
@@ -25,18 +25,17 @@ export const handleSubscriptionEvent = async (
     .from(organisationsTable)
     .where(inArray(organisationsTable.tenantId, tenantIds));
 
-  const subscriptionEvents = reauthorizeEvents.map((subscription) => {
-    const currentOrganisation = organisations.find(
-      (organisation) => organisation.tenantId === subscription.organisationId
-    );
-    if (currentOrganisation?.tenantId) {
-      return { ...subscription, organisationId: currentOrganisation.organisationId };
+  const subscriptionToRefresh = reauthorizeEvents.reduce((acc, event) => {
+    const organisation = organisations.find((org) => org.tenantId === event.organizationId);
+
+    if (organisation?.tenantId) {
+      return [...acc, { ...event, organisationId: organisation.organisationId }];
     }
-    return subscription;
-  });
+    return acc;
+  }, []);
 
   await inngest.send(
-    subscriptionEvents.map(({ subscriptionId, organisationId }) => ({
+    subscriptionToRefresh.map(({ subscriptionId, organisationId }) => ({
       name: 'teams/subscription.refresh.requested',
       data: {
         organisationId,
