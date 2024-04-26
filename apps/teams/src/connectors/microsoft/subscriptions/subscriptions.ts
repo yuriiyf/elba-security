@@ -15,7 +15,6 @@ type CreateSubscriptionData = {
   encryptToken: string;
   changeType: string;
   resource: string;
-  throwError?: boolean;
 };
 
 export type MicrosoftSubscription = z.infer<typeof subscriptionSchema>;
@@ -32,7 +31,6 @@ export const createSubscription = async ({
   encryptToken,
   resource,
   changeType,
-  throwError = true,
 }: CreateSubscriptionData) => {
   const token = await decrypt(encryptToken);
 
@@ -55,10 +53,6 @@ export const createSubscription = async ({
   });
 
   if (!response.ok) {
-    if (throwError) {
-      throw new MicrosoftError(`Could not subscribe to resource=${resource}`, { response });
-    }
-
     const error = await getJson(response);
     logger.warn('Failed to create subscription', {
       resource,
@@ -66,7 +60,8 @@ export const createSubscription = async ({
       status: response.status,
       microsoftError: error,
     });
-    return null;
+
+    throw new MicrosoftError(`Could not subscribe to resource=${resource}`, { response });
   }
 
   const data = (await response.json()) as object;

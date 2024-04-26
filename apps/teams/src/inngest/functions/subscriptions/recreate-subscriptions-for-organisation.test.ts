@@ -77,7 +77,6 @@ describe('reconnectSubscriptions', () => {
         encryptToken,
         resource,
         changeType,
-        throwError: false,
       });
     });
     expect(createSubscription).toBeCalledTimes(1);
@@ -111,7 +110,6 @@ describe('reconnectSubscriptions', () => {
         encryptToken,
         resource,
         changeType,
-        throwError: false,
       });
     });
     expect(createSubscription).toBeCalledTimes(1);

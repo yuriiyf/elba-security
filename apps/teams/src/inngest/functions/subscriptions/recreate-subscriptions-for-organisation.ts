@@ -58,20 +58,23 @@ export const recreateSubscriptionsForOrganisation = inngest.createFunction(
     });
 
     const subscriptionsToSave = await step.run('create-subscriptions', async () => {
-      const createdSubscriptions = await Promise.all(
+      const results = await Promise.allSettled(
         subscriptions.map((subscription) =>
           createSubscription({
             encryptToken: organisation.token,
             resource: subscription.resource,
             changeType: subscription.changeType,
-            throwError: false,
           })
         )
       );
 
-      return createdSubscriptions.filter(
-        (subscription): subscription is MicrosoftSubscription => subscription !== null
-      );
+      return results
+        .filter(
+          (result): result is PromiseFulfilledResult<MicrosoftSubscription | null> =>
+            result.status === 'fulfilled'
+        )
+        .map((result) => result.value)
+        .filter((subscription): subscription is MicrosoftSubscription => subscription !== null);
     });
 
     if (!subscriptionsToSave.length) {
