@@ -24,7 +24,7 @@ const organisations = [
 
 const setup = createInngestFunctionMock(
   startRecreateSubscriptionsForOrganisations,
-  'teams/organisations.start.recreate.subscriptions'
+  'teams/subscriptions.start-recreate.requested'
 );
 
 describe('startReconnectSubscriptions', () => {
@@ -47,7 +47,7 @@ describe('startReconnectSubscriptions', () => {
     expect(step.sendEvent).toBeCalledWith(
       'recreate-subscriptions',
       organisations.map((organisation) => ({
-        name: 'teams/organisation.recreate.subscriptions',
+        name: 'teams/subscriptions.recreate.requested',
         data: {
           organisationId: organisation.id,
         },

@@ -123,10 +123,10 @@ export const inngest = new Inngest({
         organisationId: string;
       };
     };
-    'teams/organisations.start.recreate.subscriptions': {
+    'teams/subscriptions.start-recreate.requested': {
       data: Record<string, never>;
     };
-    'teams/organisation.recreate.subscriptions': {
+    'teams/subscriptions.recreate.requested': {
       data: {
         organisationId: string;
       };

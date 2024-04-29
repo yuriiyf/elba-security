@@ -39,7 +39,7 @@ const createdSubscription = {
 
 const setup = createInngestFunctionMock(
   recreateSubscriptionsForOrganisation,
-  'teams/organisation.recreate.subscriptions'
+  'teams/subscriptions.recreate.requested'
 );
 
 describe('reconnectSubscriptions', () => {
@@ -67,19 +67,19 @@ describe('reconnectSubscriptions', () => {
       message: 'There are no subscriptions to save to the database.',
     });
 
-    subscriptions.forEach(({ id }) => {
-      expect(deleteSubscription).toBeCalledWith(encryptToken, id);
+    subscriptions.forEach(({ id }, i) => {
+      expect(deleteSubscription).toHaveBeenNthCalledWith(i + 1, encryptToken, id);
     });
-    expect(deleteSubscription).toBeCalledTimes(1);
+    expect(deleteSubscription).toBeCalledTimes(subscriptions.length);
 
-    subscriptions.forEach(({ resource, changeType }) => {
-      expect(createSubscription).toBeCalledWith({
+    subscriptions.forEach(({ resource, changeType }, i) => {
+      expect(createSubscription).toHaveBeenNthCalledWith(i + 1, {
         encryptToken,
         resource,
         changeType,
       });
     });
-    expect(createSubscription).toBeCalledTimes(1);
+    expect(createSubscription).toBeCalledTimes(subscriptions.length);
   });
 
   test('should create new subscriptions if the old subscriptions received', async () => {
@@ -100,18 +100,18 @@ describe('reconnectSubscriptions', () => {
       message: 'Subscriptions successfully recreated',
     });
 
-    subscriptions.forEach(({ id }) => {
-      expect(deleteSubscription).toBeCalledWith(encryptToken, id);
+    subscriptions.forEach(({ id }, i) => {
+      expect(deleteSubscription).toHaveBeenNthCalledWith(i + 1, encryptToken, id);
     });
-    expect(deleteSubscription).toBeCalledTimes(1);
+    expect(deleteSubscription).toBeCalledTimes(subscriptions.length);
 
-    subscriptions.forEach(({ resource, changeType }) => {
-      expect(createSubscription).toBeCalledWith({
+    subscriptions.forEach(({ resource, changeType }, i) => {
+      expect(createSubscription).toHaveBeenNthCalledWith(i + 1, {
         encryptToken,
         resource,
         changeType,
       });
     });
-    expect(createSubscription).toBeCalledTimes(1);
+    expect(createSubscription).toBeCalledTimes(subscriptions.length);
   });
 });

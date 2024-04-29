@@ -13,7 +13,7 @@ export const recreateSubscriptionsForOrganisation = inngest.createFunction(
   {
     id: 'teams/recreate-subscriptions-for-organisation',
   },
-  { event: 'teams/organisation.recreate.subscriptions' },
+  { event: 'teams/subscriptions.recreate.requested' },
   async ({ event, step }) => {
     const { organisationId } = event.data;
 
@@ -43,7 +43,7 @@ export const recreateSubscriptionsForOrganisation = inngest.createFunction(
       throw new NonRetriableError('There are no subscriptions in the database for organisation');
     }
 
-    await step.run('delete-subscriptions', async () =>
+    await step.run('delete-subscriptions', () =>
       Promise.all(
         subscriptions.map((subscription) =>
           deleteSubscription(organisation.token, subscription.subscriptionId)

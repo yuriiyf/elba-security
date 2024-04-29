@@ -6,7 +6,7 @@ export const startRecreateSubscriptionsForOrganisations = inngest.createFunction
   {
     id: 'teams/start-recreate-subscriptions-for-organisations',
   },
-  { event: 'teams/organisations.start.recreate.subscriptions' },
+  { event: 'teams/subscriptions.start-recreate.requested' },
   async ({ step }) => {
     const organisations = await db
       .select({
@@ -18,7 +18,7 @@ export const startRecreateSubscriptionsForOrganisations = inngest.createFunction
       await step.sendEvent(
         'recreate-subscriptions',
         organisations.map((organisation) => ({
-          name: 'teams/organisation.recreate.subscriptions',
+          name: 'teams/subscriptions.recreate.requested',
           data: {
             organisationId: organisation.id,
           },
