@@ -33,6 +33,106 @@ importers:
         specifier: latest
         version: 1.10.16
 
+  apps/asana:
+    dependencies:
+      '@elba-security/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@elba-security/inngest':
+        specifier: workspace:*
+        version: link:../../packages/inngest
+      '@elba-security/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
+      '@elba-security/nextjs':
+        specifier: workspace:*
+        version: link:../../packages/nextjs
+      '@elba-security/sdk':
+        specifier: workspace:*
+        version: link:../../packages/sdk
+      '@elba-security/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
+      '@neondatabase/serverless':
+        specifier: 0.9.0
+        version: 0.9.0
+      '@sentry/nextjs':
+        specifier: ^7.88.0
+        version: 7.93.0(next@14.0.1)(react@18.2.0)
+      date-fns:
+        specifier: ^3.2.0
+        version: 3.3.1
+      drizzle-orm:
+        specifier: ^0.29.4
+        version: 0.29.4(@neondatabase/serverless@0.9.0)(@types/react@18.2.79)(postgres@3.4.3)(react@18.2.0)
+      inngest:
+        specifier: 3.19.11
+        version: 3.19.11(@sveltejs/kit@2.5.10)(@vercel/node@2.15.10)(aws-lambda@1.0.7)(express@4.19.2)(fastify@4.27.0)(h3@1.9.0)(hono@4.3.2)(koa@2.15.3)(next@14.0.1)(typescript@5.3.3)
+      next:
+        specifier: 14.0.1
+        version: 14.0.1(react-dom@18.2.0)(react@18.2.0)
+      react:
+        specifier: ^18
+        version: 18.2.0
+      react-dom:
+        specifier: ^18
+        version: 18.2.0(react@18.2.0)
+      zod:
+        specifier: ^3.22.4
+        version: 3.22.4
+    devDependencies:
+      '@edge-runtime/vm':
+        specifier: ^3.1.7
+        version: 3.1.7
+      '@elba-security/eslint-config-custom':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config-custom
+      '@elba-security/test-utils':
+        specifier: workspace:*
+        version: link:../../packages/test-utils
+      '@elba-security/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      '@next/eslint-plugin-next':
+        specifier: ^14.0.2
+        version: 14.0.4
+      '@types/node':
+        specifier: ^20
+        version: 20.14.2
+      '@types/react':
+        specifier: ^18
+        version: 18.2.79
+      '@types/react-dom':
+        specifier: ^18
+        version: 18.2.25
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.3.1
+      drizzle-kit:
+        specifier: ^0.20.6
+        version: 0.20.18
+      eslint:
+        specifier: ^8
+        version: 8.53.0
+      inngest-cli:
+        specifier: ^0.25.2
+        version: 0.25.2
+      msw:
+        specifier: ^2.3.1
+        version: 2.3.1(typescript@5.3.3)
+      postgres:
+        specifier: ^3.4.3
+        version: 3.4.3
+      testcontainers:
+        specifier: ^10.9.0
+        version: 10.9.0
+      typescript:
+        specifier: ^5.3.3
+        version: 5.3.3
+      vitest:
+        specifier: 1.4.0
+        version: 1.4.0(@edge-runtime/vm@3.1.7)(@types/node@20.14.2)
+
   apps/confluence:
     dependencies:
       '@elba-security/config':
@@ -164,7 +264,7 @@ importers:
         version: 2.30.0
       drizzle-orm:
         specifier: ^0.29.4
-        version: 0.29.4(@neondatabase/serverless@0.6.0)(@types/react@18.2.79)(postgres@3.4.3)(react@18.2.0)
+        version: 0.29.4(@neondatabase/serverless@0.9.0)(@types/react@18.2.79)(postgres@3.4.3)(react@18.2.0)
       dropbox:
         specifier: ^10.34.0
         version: 10.34.0(@types/node-fetch@2.6.11)
@@ -213,7 +313,7 @@ importers:
         version: 16.3.1
       drizzle-kit:
         specifier: ^0.20.6
-        version: 0.20.10
+        version: 0.20.18
       eslint:
         specifier: ^8
         version: 8.53.0
@@ -2624,7 +2724,7 @@ packages:
     engines: {node: '>= 8'}
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
-      fastq: 1.15.0
+      fastq: 1.17.1
 
   /@octokit/app@14.0.2:
     resolution: {integrity: sha512-NCSCktSx+XmjuSUVn2dLfqQ9WIYePGP95SDJs4I9cn/0ZkeXcPkaoCLl64Us3dRKL2ozC7hArwze5Eu+/qt1tg==}
@@ -3283,7 +3383,7 @@ packages:
       '@slack/logger': 3.0.0
       '@slack/types': 2.11.0
       '@types/is-stream': 1.1.0
-      '@types/node': 20.11.16
+      '@types/node': 20.14.2
       axios: 1.6.5
       eventemitter3: 3.1.2
       form-data: 2.5.1
@@ -3319,7 +3419,7 @@ packages:
       sirv: 2.0.4
       svelte: 4.2.18
       tiny-glob: 0.2.9
-      vite: 5.0.5(@types/node@20.11.16)
+      vite: 5.0.5(@types/node@20.14.2)
 
   /@sveltejs/vite-plugin-svelte-inspector@2.1.0(@sveltejs/vite-plugin-svelte@3.1.1)(svelte@4.2.18)(vite@5.0.5):
     resolution: {integrity: sha512-9QX28IymvBlSCqsCll5t0kQVxipsfhFFL+L2t3nTWfXnddYwxBuAEtTtlaVQpRz9c37BhJjltSeY4AJSC03SSg==}
@@ -3332,7 +3432,7 @@ packages:
       '@sveltejs/vite-plugin-svelte': 3.1.1(svelte@4.2.18)(vite@5.0.5)
       debug: 4.3.4
       svelte: 4.2.18
-      vite: 5.0.5(@types/node@20.11.16)
+      vite: 5.0.5(@types/node@20.14.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -3350,7 +3450,7 @@ packages:
       magic-string: 0.30.10
       svelte: 4.2.18
       svelte-hmr: 0.16.0(svelte@4.2.18)
-      vite: 5.0.5(@types/node@20.11.16)
+      vite: 5.0.5(@types/node@20.14.2)
       vitefu: 0.2.5(vite@5.0.5)
     transitivePeerDependencies:
       - supports-color
@@ -6912,11 +7012,6 @@ packages:
       semver: 7.5.4
       toad-cache: 3.7.0
 
-  /fastq@1.15.0:
-    resolution: {integrity: sha512-wBrocU2LCXXa+lWBt8RoIRD89Fi8OdABODa/kEnyeyjS5aZO5/GNvI5sEINADqP/h8M29UHTHUb53sUu5Ihqdw==}
-    dependencies:
-      reusify: 1.0.4
-
   /fastq@1.17.1:
     resolution: {integrity: sha512-sRVD3lWVIXWg6By68ZN7vho9a1pQcN/WBFaAAsDDFzlJjvoGx0P8z7V1t72grFJfJhu3YPZBuu25f7Kaw2jN1w==}
     dependencies:
@@ -7210,6 +7305,7 @@ packages:
 
   /glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
+    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -10767,7 +10863,7 @@ packages:
       debug: 4.3.4
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 5.0.5(@types/node@20.14.2)
+      vite: 5.0.5(@types/node@20.10.3)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -10810,6 +10906,27 @@ packages:
       pathe: 1.1.1
       picocolors: 1.0.0
       vite: 5.0.5(@types/node@20.11.16)
+    transitivePeerDependencies:
+      - '@types/node'
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+    dev: true
+
+  /vite-node@1.4.0(@types/node@20.14.2):
+    resolution: {integrity: sha512-VZDAseqjrHgNd4Kh8icYHWzTKSCZMhia7GyHfhtzLW33fZlG9SwsB6CEhgyVOWkJfJ2pFLrp/Gj1FSfAiqH9Lw==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    dependencies:
+      cac: 6.7.14
+      debug: 4.3.4
+      pathe: 1.1.1
+      picocolors: 1.0.0
+      vite: 5.0.5(@types/node@20.14.2)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -10926,7 +11043,6 @@ packages:
       rollup: 4.6.1
     optionalDependencies:
       fsevents: 2.3.3
-    dev: true
 
   /vitefu@0.2.5(vite@5.0.5):
     resolution: {integrity: sha512-SgHtMLoqaeeGnd2evZ849ZbACbnwQCIwRH57t18FxcXoZop0uQu0uzlIhJBlF/eWVzuce0sHeqPcDo+evVcg8Q==}
@@ -10936,7 +11052,7 @@ packages:
       vite:
         optional: true
     dependencies:
-      vite: 5.0.5(@types/node@20.11.16)
+      vite: 5.0.5(@types/node@20.14.2)
 
   /vitest@1.0.0(@types/node@20.11.16):
     resolution: {integrity: sha512-jpablj5+ifiFHV3QGOxPews3uxBuu6rQUzTaQYtEd6ocBpdQBil6AvmmGRQ3Rn0WPgyzb+Ni+JekfMyng+qYng==}
@@ -11031,14 +11147,14 @@ packages:
       debug: 4.3.4
       execa: 8.0.1
       local-pkg: 0.5.0
-      magic-string: 0.30.5
+      magic-string: 0.30.10
       pathe: 1.1.1
       picocolors: 1.0.0
       std-env: 3.6.0
       strip-literal: 2.1.0
       tinybench: 2.5.1
       tinypool: 0.8.2
-      vite: 5.0.5(@types/node@20.14.2)
+      vite: 5.0.5(@types/node@20.10.3)
       vite-node: 1.4.0
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
@@ -11088,7 +11204,7 @@ packages:
       debug: 4.3.4
       execa: 8.0.1
       local-pkg: 0.5.0
-      magic-string: 0.30.5
+      magic-string: 0.30.10
       pathe: 1.1.1
       picocolors: 1.0.0
       std-env: 3.6.0
@@ -11145,7 +11261,7 @@ packages:
       debug: 4.3.4
       execa: 8.0.1
       local-pkg: 0.5.0
-      magic-string: 0.30.5
+      magic-string: 0.30.10
       pathe: 1.1.1
       picocolors: 1.0.0
       std-env: 3.6.0
@@ -11154,6 +11270,63 @@ packages:
       tinypool: 0.8.2
       vite: 5.0.5(@types/node@20.11.16)
       vite-node: 1.4.0(@types/node@20.11.16)
+      why-is-node-running: 2.2.2
+    transitivePeerDependencies:
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+    dev: true
+
+  /vitest@1.4.0(@edge-runtime/vm@3.1.7)(@types/node@20.14.2):
+    resolution: {integrity: sha512-gujzn0g7fmwf83/WzrDTnncZt2UiXP41mHuFYFrdwaLRVQ6JYQEiME2IfEjU3vcFL3VKa75XhI3lFgn+hfVsQw==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@edge-runtime/vm': '*'
+      '@types/node': ^18.0.0 || >=20.0.0
+      '@vitest/browser': 1.4.0
+      '@vitest/ui': 1.4.0
+      happy-dom: '*'
+      jsdom: '*'
+    peerDependenciesMeta:
+      '@edge-runtime/vm':
+        optional: true
+      '@types/node':
+        optional: true
+      '@vitest/browser':
+        optional: true
+      '@vitest/ui':
+        optional: true
+      happy-dom:
+        optional: true
+      jsdom:
+        optional: true
+    dependencies:
+      '@edge-runtime/vm': 3.1.7
+      '@types/node': 20.14.2
+      '@vitest/expect': 1.4.0
+      '@vitest/runner': 1.4.0
+      '@vitest/snapshot': 1.4.0
+      '@vitest/spy': 1.4.0
+      '@vitest/utils': 1.4.0
+      acorn-walk: 8.3.2
+      chai: 4.3.10
+      debug: 4.3.4
+      execa: 8.0.1
+      local-pkg: 0.5.0
+      magic-string: 0.30.10
+      pathe: 1.1.1
+      picocolors: 1.0.0
+      std-env: 3.6.0
+      strip-literal: 2.1.0
+      tinybench: 2.5.1
+      tinypool: 0.8.2
+      vite: 5.0.5(@types/node@20.14.2)
+      vite-node: 1.4.0(@types/node@20.14.2)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
