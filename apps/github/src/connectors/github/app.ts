@@ -3,6 +3,7 @@ import { createOctokitApp } from './commons/client';
 
 export const AppSchema = z.object({
   name: z.string(),
+  html_url: z.string(),
   description: z.string().nullable(),
   owner: z
     .object({

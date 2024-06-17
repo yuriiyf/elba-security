@@ -110,7 +110,6 @@ const OrganizationInstallationSchema = z.object({
   created_at: z.string(),
   permissions: z.record(z.enum(['read', 'write'])),
   suspended_at: z.string().nullable(),
-  html_url: z.string(),
 });
 
 export type OrganizationInstallation = z.infer<typeof OrganizationInstallationSchema>;
